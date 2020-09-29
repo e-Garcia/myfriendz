@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="friendDetails"
+            type="com.egarcia.myfriendz.model.Friend" />
+    </data>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".view.FriendDetailsFragment">
+
+        <TextView
+            android:id="@+id/name_detail"
+            style="@style/Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{friendDetails.name}"/>
+
+        <TextView
+            android:id="@+id/last_contacted_detail"
+            style="@style/Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{friendDetails.lastContacted}"/>
+
+        <TextView
+            android:id="@+id/frequency_detail"
+            style="@style/Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{friendDetails.frequency}"/>
+
+        <TextView
+            android:id="@+id/phone_detail"
+            style="@style/Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{friendDetails.phone}"/>
+
+        <TextView
+            android:id="@+id/email_detail"
+            style="@style/Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{friendDetails.email}"/>
+
+        <TextView
+            android:id="@+id/comments_detail"
+            style="@style/Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{friendDetails.comments}"/>
+
+    </LinearLayout>
+</layout>
