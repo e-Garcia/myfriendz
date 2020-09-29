@@ -1,7 +1,8 @@
-package com.egarcia.myfriendz
+package com.egarcia.myfriendz.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.egarcia.myfriendz.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
