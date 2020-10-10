@@ -9,9 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.ItemFriendBinding
 import com.egarcia.myfriendz.model.Friend
-import kotlinx.android.synthetic.main.fragment_list.view.*
 import kotlinx.android.synthetic.main.item_friend.view.*
 
+/**
+ * Display logic for a list of friends.
+ * @see FriendsListFragment as it's the fragment where this RecyclerView is displayed on.
+ * @see Friend as it's the model class to be displayed on the list.
+ */
 class FriendsListAdapter : RecyclerView.Adapter<FriendsListAdapter.FriendsViewHolder>(), FriendClickListener {
 
     private var friendsList = arrayListOf<Friend>()
@@ -42,7 +46,7 @@ class FriendsListAdapter : RecyclerView.Adapter<FriendsListAdapter.FriendsViewHo
 
     override fun onFriendClick(view: View) {
         val uuid = view.friendId.text.toString().toInt()
-        val action = ListFragmentDirections.actionListFragmentToFriendDetailsFragment(uuid)
+        val action = FriendsListFragmentDirections.actionListFragmentToFriendDetailsFragment(uuid)
         Navigation.findNavController(view).navigate(action)
     }
 
