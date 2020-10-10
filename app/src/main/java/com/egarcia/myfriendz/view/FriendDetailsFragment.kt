@@ -12,6 +12,11 @@ import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.FragmentFriendDetailsBinding
 import com.egarcia.myfriendz.viewmodel.FriendsDetailViewModel
 
+/**
+ * Responsible for displaying a friend contact details such as full name, how frequent should the
+ * friend contact reminder should be displayed and general information such as email and phone number.
+ * @See FriendsListFragment as this details screen is displayed when a friend item is selected from the list.
+ */
 class FriendDetailsFragment : Fragment() {
 
     private lateinit var viewModel: FriendsDetailViewModel

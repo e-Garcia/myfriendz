@@ -4,6 +4,11 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 
+/**
+ * Determines how the Friend model class should be stored and retrieved from the Room database.
+ * Relies on Kotlin coroutines for handling the asynchronous processing.
+ * @see Friend as it's the model class this dao persists.
+ */
 @Dao
 interface FriendDao {
 
