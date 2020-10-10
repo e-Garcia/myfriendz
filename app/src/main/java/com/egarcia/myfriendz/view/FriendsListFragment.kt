@@ -14,8 +14,13 @@ import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.viewmodel.FriendsListViewModel
 import kotlinx.android.synthetic.main.fragment_list.*
 
-
-class ListFragment : Fragment() {
+/**
+ * Responsible for displaying a list of friends along their details such as their full name
+ * and when were they last contacted.
+ * @see Friend as it's the model class to be displayed on the list.
+ * @See FriendsListAdapter as it's the adapter that handles the display logic of this list.
+ */
+class FriendsListFragment : Fragment() {
 
     private val friendsAdapter = FriendsListAdapter()
     private lateinit var viewModel: FriendsListViewModel

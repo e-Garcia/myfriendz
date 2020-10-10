@@ -4,6 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * Model class, uses room annotations for data storage.
+ * @see FriendDao
+ */
 @Entity
 data class Friend(
 

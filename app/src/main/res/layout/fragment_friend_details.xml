@@ -21,42 +21,48 @@
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{friendDetails.name}"/>
+            android:text="@{friendDetails.name}"
+            tools:text="@tools:sample/full_names" />
 
         <TextView
             android:id="@+id/last_contacted_detail"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{friendDetails.lastContacted}"/>
+            android:text="@{friendDetails.lastContacted}"
+            tools:text="@sample/last_contacted" />
 
         <TextView
             android:id="@+id/frequency_detail"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{friendDetails.frequency}"/>
+            android:text="@{friendDetails.frequency}"
+            tools:text="@sample/last_contacted" />
 
         <TextView
             android:id="@+id/phone_detail"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{friendDetails.phone}"/>
+            android:text="@{friendDetails.phone}"
+            tools:text="@tools:sample/us_phones" />
 
         <TextView
             android:id="@+id/email_detail"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{friendDetails.email}"/>
+            android:text="@{friendDetails.email}"
+            tools:text="@sample/emails" />
 
         <TextView
             android:id="@+id/comments_detail"
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{friendDetails.comments}"/>
+            android:text="@{friendDetails.comments}"
+            tools:text="@tools:sample/lorem/random" />
 
     </LinearLayout>
 </layout>
