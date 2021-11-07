@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.ItemFriendBinding
 import com.egarcia.myfriendz.model.Friend
-import kotlinx.android.synthetic.main.item_friend.view.*
 
 /**
  * Display logic for a list of friends.
@@ -45,7 +44,7 @@ class FriendsListAdapter : RecyclerView.Adapter<FriendsListAdapter.FriendsViewHo
     override fun getItemCount(): Int = friendsList.size
 
     override fun onFriendClick(view: View) {
-        val uuid = view.friendId.text.toString().toInt()
+        val uuid = ItemFriendBinding.bind(view).friendId.text.toString().toInt()
         val action = FriendsListFragmentDirections.actionListFragmentToFriendDetailsFragment(uuid)
         Navigation.findNavController(view).navigate(action)
     }

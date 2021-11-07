@@ -5,14 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egarcia.myfriendz.R
+import com.egarcia.myfriendz.databinding.FragmentListBinding
 import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.viewmodel.FriendsListViewModel
-import kotlinx.android.synthetic.main.fragment_list.*
 
 /**
  * Responsible for displaying a list of friends along their details such as their full name
@@ -24,18 +24,22 @@ class FriendsListFragment : Fragment() {
 
     private val friendsAdapter = FriendsListAdapter()
     private lateinit var viewModel: FriendsListViewModel
+    private lateinit var binding: FragmentListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_list, container, false)
+    ): View {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_list, container, false)
+        return binding.root
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(FriendsListViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FriendsListViewModel::class.java)
         viewModel.refresh()
-        friendsRecyclerView.apply {
+        binding.friendsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = friendsAdapter
         }

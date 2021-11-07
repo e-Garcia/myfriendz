@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.FragmentFriendDetailsBinding
 import com.egarcia.myfriendz.viewmodel.FriendsDetailViewModel
@@ -31,9 +31,9 @@ class FriendDetailsFragment : Fragment() {
         return dataBinding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(FriendsDetailViewModel::class.java)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this).get(FriendsDetailViewModel::class.java)
         arguments?.let {
             friendUuid = FriendDetailsFragmentArgs.fromBundle(it).friendUuid
         }
