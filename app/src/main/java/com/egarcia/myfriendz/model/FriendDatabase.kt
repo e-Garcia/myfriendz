@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase
  * @see Friend as it's the model class to be stored in the database.
  * @see FriendDao as it controls how the main table on the database is queried and updated.
  */
-@Database(entities = arrayOf(Friend::class), version = 1, exportSchema = false)
+@Database(entities = [Friend::class], version = 1, exportSchema = false)
 abstract class FriendDatabase: RoomDatabase() {
     abstract fun friendDao(): FriendDao
 
