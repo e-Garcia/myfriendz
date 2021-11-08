@@ -1,9 +1,10 @@
-package com.egarcia.myfriendz.viewmodel
+package com.egarcia.myfriendz.showFriend.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.model.FriendDatabase
+import com.egarcia.myfriendz.viewmodel.BaseViewModel
 import kotlinx.coroutines.launch
 
 class FriendsListViewModel(application: Application) : BaseViewModel(application) {
@@ -12,13 +13,6 @@ class FriendsListViewModel(application: Application) : BaseViewModel(application
 
     fun refresh() {
         fetchFromDatabase()
-    }
-
-    //TODO implement add friend
-    fun addFriend(friend: Friend) {
-        launch {
-            FriendDatabase(getApplication()).friendDao().addFriend(friend)
-        }
     }
 
     //TODO remove from code as this is only needed for testing purposes

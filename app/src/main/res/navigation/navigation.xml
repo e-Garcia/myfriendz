@@ -7,12 +7,15 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.egarcia.myfriendz.view.FriendsListFragment"
+        android:name="com.egarcia.myfriendz.showFriend.view.FriendsListFragment"
         android:label="fragment_list"
         tools:layout="@layout/fragment_list" >
         <action
             android:id="@+id/action_listFragment_to_friendDetailsFragment"
             app:destination="@id/friendDetailsFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_addFriendFragment"
+            app:destination="@id/addFriendFragment" />
     </fragment>
     <fragment
         android:id="@+id/friendDetailsFragment"
@@ -24,4 +27,8 @@
             android:defaultValue="0"
             app:argType="integer"/>
     </fragment>
+    <fragment
+        android:id="@+id/addFriendFragment"
+        android:name="com.egarcia.myfriendz.addFriend.view.AddFriendFragment"
+        android:label="AddFriendFragment" />
 </navigation>

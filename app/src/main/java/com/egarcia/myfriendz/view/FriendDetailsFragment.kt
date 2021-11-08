@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.FragmentFriendDetailsBinding
 import com.egarcia.myfriendz.viewmodel.FriendsDetailViewModel
+import com.egarcia.myfriendz.showFriend.view.FriendsListFragment
 
 /**
  * Responsible for displaying a friend contact details such as full name, how frequent should the

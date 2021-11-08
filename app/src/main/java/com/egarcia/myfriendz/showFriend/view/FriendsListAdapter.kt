@@ -1,10 +1,8 @@
-package com.egarcia.myfriendz.view
+package com.egarcia.myfriendz.showFriend.view
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.ItemFriendBinding
@@ -15,7 +13,8 @@ import com.egarcia.myfriendz.model.Friend
  * @see FriendsListFragment as it's the fragment where this RecyclerView is displayed on.
  * @see Friend as it's the model class to be displayed on the list.
  */
-class FriendsListAdapter : RecyclerView.Adapter<FriendsListAdapter.FriendsViewHolder>(), FriendClickListener {
+class FriendsListAdapter(private val actionHandler: FriendListActionHandler) :
+    RecyclerView.Adapter<FriendsListAdapter.FriendsViewHolder>() {
 
     private var friendsList = arrayListOf<Friend>()
 
@@ -38,16 +37,10 @@ class FriendsListAdapter : RecyclerView.Adapter<FriendsListAdapter.FriendsViewHo
 
     override fun onBindViewHolder(holder: FriendsViewHolder, position: Int) {
         holder.view.friend = friendsList[position]
-        holder.view.listener = this
+        holder.view.actionHandler = actionHandler
     }
 
     override fun getItemCount(): Int = friendsList.size
-
-    override fun onFriendClick(view: View) {
-        val uuid = ItemFriendBinding.bind(view).friendId.text.toString().toInt()
-        val action = FriendsListFragmentDirections.actionListFragmentToFriendDetailsFragment(uuid)
-        Navigation.findNavController(view).navigate(action)
-    }
 
     class FriendsViewHolder(var view: ItemFriendBinding) : RecyclerView.ViewHolder(view.root)
 
