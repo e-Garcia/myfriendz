@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MyFriendz</string>
+    <string name="description_add_friend">Add a friend</string>
+    <string name="add_friend">Add friend</string>
+    <string name="description_profile_picture">Profile picture</string>
+    <string name="description_save_friend">Save Friend</string>
 </resources>

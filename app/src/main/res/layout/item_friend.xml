@@ -10,15 +10,15 @@
             type="com.egarcia.myfriendz.model.Friend" />
 
         <variable
-            name="listener"
-            type="com.egarcia.myfriendz.view.FriendClickListener" />
+            name="actionHandler"
+            type="com.egarcia.myfriendz.showFriend.view.FriendListActionHandler" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin_medium"
-        android:onClick="@{listener::onFriendClick}">
+        android:padding="@dimen/m_spacing"
+        android:onClick="@{(view) -> actionHandler.viewFriend(view, friend)}">
 
         <TextView
             android:id="@+id/friendId"

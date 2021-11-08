@@ -2,6 +2,7 @@ package com.egarcia.myfriendz.model
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 /**
@@ -21,7 +22,7 @@ interface FriendDao {
     @Query("DElETE FROM friend WHERE uuid = :friendId")
     suspend fun deleteFriend(friendId: Int)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFriend(friend: Friend)
 
     //Implemented for testing purposes only. to be deleted when done using it.
