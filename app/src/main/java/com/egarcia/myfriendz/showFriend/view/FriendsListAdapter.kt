@@ -39,7 +39,7 @@ class FriendsListAdapter(private val actionHandler: FriendListActionHandler) :
         fun bind(friend: Friend, actionHandler: FriendListActionHandler) {
             binding.friend = friend
             binding.actionHandler = actionHandler
-            binding.executePendingBindings() // Immediately update the view
+            binding.executePendingBindings()
         }
     }
 }

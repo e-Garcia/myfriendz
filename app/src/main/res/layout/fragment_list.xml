@@ -33,7 +33,7 @@
             android:layout_margin="@dimen/xl_spacing"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="@{(view) -> actionHandler.addFriend(view)}"
+            android:onClick="@{(view) -> actionHandler.onAddFriendClicked(view)}"
             android:backgroundTint="@color/colorPrimaryDark"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

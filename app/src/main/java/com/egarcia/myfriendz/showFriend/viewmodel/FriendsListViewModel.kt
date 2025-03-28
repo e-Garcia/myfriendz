@@ -6,7 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.model.FriendDao
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,10 +23,22 @@ class FriendsListViewModel @Inject constructor(
         fetchFromDatabase()
     }
 
+    fun updateFriend(friend: Friend) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                friend.lastContacted = LocalDate.now()
+                friendDao.updateFriend(friend)
+                fetchFromDatabase()
+            }
+        }
+    }
+
     private fun fetchFromDatabase() {
         viewModelScope.launch {
-            val friendsList = friendDao.getAllFriends()
-            friends.value = friendsList
+            withContext(Dispatchers.IO) {
+                val friendsList = friendDao.getAllFriends()
+                friends.postValue(friendsList)
+            }
         }
     }
 }
