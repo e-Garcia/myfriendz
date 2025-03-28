@@ -6,18 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.FragmentFriendDetailsBinding
 import com.egarcia.myfriendz.viewmodel.FriendsDetailViewModel
 import com.egarcia.myfriendz.showFriend.view.FriendsListFragment
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Responsible for displaying a friend contact details such as full name, how frequent should the
  * friend contact reminder should be displayed and general information such as email and phone number.
  * @See FriendsListFragment as this details screen is displayed when a friend item is selected from the list.
  */
+@AndroidEntryPoint
 class FriendDetailsFragment : Fragment() {
 
     private lateinit var viewModel: FriendsDetailViewModel
@@ -27,7 +28,7 @@ class FriendDetailsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         dataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_friend_details, container, false)
         return dataBinding.root
     }
@@ -43,10 +44,10 @@ class FriendDetailsFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.friend.observe(viewLifecycleOwner, Observer { friend ->
+        viewModel.friend.observe(viewLifecycleOwner) { friend ->
             friend?.let {
                 dataBinding.friendDetails = it
             }
-        })
+        }
     }
 }

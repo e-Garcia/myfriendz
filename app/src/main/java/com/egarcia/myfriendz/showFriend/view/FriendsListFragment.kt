@@ -1,20 +1,18 @@
 package com.egarcia.myfriendz.showFriend.view
 
+import FriendsListAdapter
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.FragmentListBinding
 import com.egarcia.myfriendz.showFriend.viewmodel.FriendsListViewModel
 import com.egarcia.myfriendz.model.Friend
+import androidx.navigation.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Responsible for displaying a list of friends along their details such as their full name
@@ -22,10 +20,11 @@ import com.egarcia.myfriendz.model.Friend
  * @see Friend as it's the model class to be displayed on the list.
  * @See FriendsListAdapter as it's the adapter that handles the display logic of this list.
  */
+@AndroidEntryPoint
 class FriendsListFragment : Fragment(), FriendListActionHandler {
 
     private val friendsAdapter = FriendsListAdapter(this)
-    private lateinit var viewModel: FriendsListViewModel
+    private val viewModel: FriendsListViewModel by viewModels()
     private lateinit var binding: FragmentListBinding
 
     override fun onCreateView(
@@ -39,11 +38,10 @@ class FriendsListFragment : Fragment(), FriendListActionHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FriendsListViewModel::class.java)
         viewModel.refresh()
         binding.apply {
             actionHandler = this@FriendsListFragment
-            viewModel = viewModel
+            viewModel = this@FriendsListFragment.viewModel
         }
         binding.friendsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -53,20 +51,20 @@ class FriendsListFragment : Fragment(), FriendListActionHandler {
     }
 
     private fun observeViewModel() {
-        viewModel.friends.observe(viewLifecycleOwner, Observer { friends ->
+        viewModel.friends.observe(viewLifecycleOwner) { friends ->
             friends?.let {
-                friendsAdapter.setData(it)
+                friendsAdapter.submitList(it)
             }
-        })
+        }
     }
 
     override fun viewFriend(view: View, friend: Friend) {
         val action = FriendsListFragmentDirections.actionListFragmentToFriendDetailsFragment(friend.uuid)
-        Navigation.findNavController(view).navigate(action)
+        view.findNavController().navigate(action)
     }
 
     override fun addFriend(view: View) {
         val action = FriendsListFragmentDirections.actionListFragmentToAddFriendFragment()
-        Navigation.findNavController(view).navigate(action)
+        view.findNavController().navigate(action)
     }
 }
