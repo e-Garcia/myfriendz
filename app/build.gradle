@@ -1,11 +1,14 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: "androidx.navigation.safeargs.kotlin"
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+    id("androidx.navigation.safeargs.kotlin")
+    id("com.google.devtools.ksp")
+}
 
 android {
     namespace = "com.egarcia.myfriendz"
-    compileSdk = 34
+    compileSdk 35
     defaultConfig {
         applicationId = "com.egarcia.myfriendz"
         minSdk = 24
@@ -35,34 +38,33 @@ android {
 }
 
 dependencies {
-    def roomVersion = "2.6.1" //Check for latest stable version
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
 
-    // To use Kotlin Symbol Processing (KSP)
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
 
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.4.1")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    // Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-    // Navigation Feature module Support
-    implementation("androidx.navigation:navigation-dynamic-features-fragment:2.7.7")
-    // Room
-    implementation("androidx.room:room-runtime:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:2.6.1")
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+
+    // Navigation
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    // Navigation Feature module Support
+    implementation(libs.androidx.navigation.dynamic.features.fragment)
     // Preference manager for androidx for sharedPreferences
-    implementation("androidx.preference:preference-ktx:1.2.1")
+    implementation(libs.androidx.preference.ktx)
     // ViewModel Lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
 }
