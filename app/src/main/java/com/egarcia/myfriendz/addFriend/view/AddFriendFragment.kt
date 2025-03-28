@@ -1,27 +1,25 @@
 package com.egarcia.myfriendz.addFriend.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import com.egarcia.myfriendz.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.egarcia.myfriendz.addFriend.viewmodel.AddFriendViewModel
 import com.egarcia.myfriendz.databinding.FragmentAddFriendBinding
-import com.egarcia.myfriendz.model.Friend
+import androidx.navigation.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [AddFriendFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class AddFriendFragment : Fragment(), AddFriendActionHandler {
 
-    private lateinit var viewModel: AddFriendViewModel
+    private val viewModel: AddFriendViewModel by viewModels() //Use this line to inject the viewModel
     private lateinit var binding: FragmentAddFriendBinding
 
     override fun onCreateView(
@@ -34,7 +32,6 @@ class AddFriendFragment : Fragment(), AddFriendActionHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AddFriendViewModel::class.java)
         binding.apply {
             actionHandler = this@AddFriendFragment
             viewmodel = viewModel
@@ -48,6 +45,6 @@ class AddFriendFragment : Fragment(), AddFriendActionHandler {
 
     override fun saveFriend() {
         viewModel.addFriend()
-        Navigation.findNavController(binding.root).popBackStack()
+        binding.root.findNavController().popBackStack()
     }
 }

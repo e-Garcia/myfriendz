@@ -1,13 +1,18 @@
 package com.egarcia.myfriendz.showFriend.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.egarcia.myfriendz.model.Friend
-import com.egarcia.myfriendz.model.FriendDatabase
-import com.egarcia.myfriendz.viewmodel.BaseViewModel
+import com.egarcia.myfriendz.model.FriendDao
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FriendsListViewModel(application: Application) : BaseViewModel(application) {
+@HiltViewModel
+class FriendsListViewModel @Inject constructor(
+    private val friendDao: FriendDao
+) : ViewModel() {
 
     val friends = MutableLiveData<List<Friend>>()
 
@@ -15,18 +20,10 @@ class FriendsListViewModel(application: Application) : BaseViewModel(application
         fetchFromDatabase()
     }
 
-    //TODO remove from code as this is only needed for testing purposes
-    fun deleteAllFriends() {
-        launch {
-            FriendDatabase.getInstance(getApplication()).friendDao().deleteAllFriends()
-        }
-    }
-
     private fun fetchFromDatabase() {
-        launch {
-            val friendsList = FriendDatabase.getInstance(getApplication()).friendDao().getAllFriends()
+        viewModelScope.launch {
+            val friendsList = friendDao.getAllFriends()
             friends.value = friendsList
         }
     }
-
 }
