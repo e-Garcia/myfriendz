@@ -18,13 +18,13 @@ class FriendsListViewModel(application: Application) : BaseViewModel(application
     //TODO remove from code as this is only needed for testing purposes
     fun deleteAllFriends() {
         launch {
-            FriendDatabase(getApplication()).friendDao().deleteAllFriends()
+            FriendDatabase.getInstance(getApplication()).friendDao().deleteAllFriends()
         }
     }
 
     private fun fetchFromDatabase() {
         launch {
-            val friendsList = FriendDatabase(getApplication()).friendDao().getAllFriends()
+            val friendsList = FriendDatabase.getInstance(getApplication()).friendDao().getAllFriends()
             friends.value = friendsList
         }
     }

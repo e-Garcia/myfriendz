@@ -11,7 +11,7 @@ class FriendsDetailViewModel(application: Application) : BaseViewModel(applicati
 
     fun fetch(friendUuid: Int) {
         launch {
-            val friendFromDatabase = FriendDatabase(getApplication()).friendDao().getFriend(friendUuid)
+            val friendFromDatabase = FriendDatabase.getInstance(getApplication()).friendDao().getFriend(friendUuid)
             friend.value = friendFromDatabase
         }
     }
