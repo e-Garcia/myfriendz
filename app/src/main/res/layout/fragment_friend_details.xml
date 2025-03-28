@@ -29,7 +29,7 @@
             style="@style/Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{friendDetails.lastContacted}"
+            android:text="@{friendDetails.lastContactedFormatted}"
             tools:text="@sample/last_contacted" />
 
         <TextView

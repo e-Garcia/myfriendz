@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="friend"
             type="com.egarcia.myfriendz.model.Friend" />
@@ -18,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/m_spacing"
-        android:onClick="@{(view) -> actionHandler.viewFriend(view, friend)}">
+        android:onClick="@{(view) -> actionHandler.onFriendClicked(view, friend)}">
 
         <TextView
             android:id="@+id/friendId"
@@ -44,9 +43,10 @@
             style="@style/CardText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{friend.lastContacted}"
+            android:text="@{friend.lastContactedFormatted}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:onLongClick="@{(view) -> actionHandler.onFriendLongClicked(view, friend)}"
             tools:text="@sample/last_contacted" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

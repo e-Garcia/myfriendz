@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 /**
  * Determines how the Friend model class should be stored and retrieved from the Room database.
@@ -13,19 +14,23 @@ import androidx.room.Query
 @Dao
 interface FriendDao {
 
-    @Query("SELECT * FROM friend")
+    @Query("SELECT * FROM friends")
     suspend fun getAllFriends(): List<Friend>
 
-    @Query("SELECT * FROM friend WHERE uuid = :friendId")
+    @Query("SELECT * FROM friends WHERE uuid = :friendId")
     suspend fun getFriend(friendId: Int): Friend
 
-    @Query("DElETE FROM friend WHERE uuid = :friendId")
+    @Update(entity = Friend::class)
+    suspend fun updateFriend(friend: Friend)
+
+    @Query("DElETE FROM friends WHERE uuid = :friendId")
     suspend fun deleteFriend(friendId: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFriend(friend: Friend)
 
     //Implemented for testing purposes only. to be deleted when done using it.
-    @Query("DElETE FROM friend")
+    @Query("DElETE FROM friends")
+
     suspend fun deleteAllFriends()
 }

@@ -12,6 +12,7 @@ import com.egarcia.myfriendz.databinding.FragmentListBinding
 import com.egarcia.myfriendz.showFriend.viewmodel.FriendsListViewModel
 import com.egarcia.myfriendz.model.Friend
 import androidx.navigation.findNavController
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -58,13 +59,20 @@ class FriendsListFragment : Fragment(), FriendListActionHandler {
         }
     }
 
-    override fun viewFriend(view: View, friend: Friend) {
+    override fun onFriendLongClicked(view: View, friend: Friend): Boolean {
+        Snackbar.make(view, "Friend ${friend.name} was updated", Snackbar.LENGTH_LONG).show()
+        viewModel.updateFriend(friend)
+        return true
+    }
+
+    override fun onFriendClicked(view: View, friend: Friend) {
         val action = FriendsListFragmentDirections.actionListFragmentToFriendDetailsFragment(friend.uuid)
         view.findNavController().navigate(action)
     }
 
-    override fun addFriend(view: View) {
+    override fun onAddFriendClicked(view: View) {
         val action = FriendsListFragmentDirections.actionListFragmentToAddFriendFragment()
         view.findNavController().navigate(action)
     }
+
 }
