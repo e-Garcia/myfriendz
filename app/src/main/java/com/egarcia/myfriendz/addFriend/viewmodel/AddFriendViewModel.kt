@@ -1,20 +1,25 @@
 package com.egarcia.myfriendz.addFriend.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.egarcia.myfriendz.model.Friend
-import com.egarcia.myfriendz.model.FriendDatabase
-import com.egarcia.myfriendz.viewmodel.BaseViewModel
+import com.egarcia.myfriendz.model.FriendDao
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AddFriendViewModel(application: Application) : BaseViewModel(application) {
+@HiltViewModel
+class AddFriendViewModel @Inject constructor(
+    private val friendDao: FriendDao
+) : ViewModel() {
 
     val friend = MutableLiveData(Friend("", "", "", "", "", ""))
 
     fun addFriend() {
-        launch {
+        viewModelScope.launch {
             friend.value?.let {
-                FriendDatabase(getApplication()).friendDao().addFriend(it)
+                friendDao.addFriend(it)
             }
         }
     }

@@ -1,7 +1,8 @@
-package com.egarcia.myfriendz.addFriend.viewmodel
+package com.egarcia.myfriendz
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.egarcia.myfriendz.addFriend.viewmodel.AddFriendViewModel
 import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.model.FriendDao
 import com.egarcia.myfriendz.model.FriendDatabase
@@ -9,7 +10,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
-import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -45,10 +45,11 @@ class AddFriendViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(testDispatcher)
+
         coEvery { application.applicationContext } returns application
         coEvery { friendDatabase.friendDao() } returns friendDao
-        coEvery { FriendDatabase(application) } returns friendDatabase
-        viewModel = AddFriendViewModel(application)
+
+        viewModel = AddFriendViewModel(friendDao)
     }
 
     @After
@@ -71,6 +72,7 @@ class AddFriendViewModelTest {
     fun `addFriend calls friendDao addFriend`() = runTest {
         // Given
         val friend = createTestFriend()
+        coEvery { friendDao.addFriend(any()) } returns Unit
         viewModel.friend.value = friend
 
         // When

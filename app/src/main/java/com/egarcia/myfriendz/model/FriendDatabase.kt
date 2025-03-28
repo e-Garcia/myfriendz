@@ -11,23 +11,26 @@ import androidx.room.RoomDatabase
  * @see FriendDao as it controls how the main table on the database is queried and updated.
  */
 @Database(entities = [Friend::class], version = 1, exportSchema = false)
-abstract class FriendDatabase: RoomDatabase() {
+abstract class FriendDatabase : RoomDatabase() {
     abstract fun friendDao(): FriendDao
 
     companion object {
-        @Volatile private var instance: FriendDatabase? = null
-        private val LOCK = Any()
+        @Volatile
+        private var instance: FriendDatabase? = null
 
-        operator fun invoke(context: Context) = instance?: synchronized(LOCK) {
-            instance?:buildDatabase(context).also {
-                instance = it
+        fun getInstance(context: Context): FriendDatabase {
+            // Double-checked locking for thread safety
+            return instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
             }
         }
 
-        private fun buildDatabase(context: Context) = Room.databaseBuilder(
-            context,
-        FriendDatabase::class.java,
-        "frienddatabase"
-        ).build()
+        private fun buildDatabase(context: Context): FriendDatabase {
+            return Room.databaseBuilder(
+                context.applicationContext, // Use application context to avoid memory leaks
+                FriendDatabase::class.java,
+                "friends_database" // More descriptive database name
+            ).build()
+        }
     }
 }
