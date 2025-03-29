@@ -3,6 +3,7 @@ package com.egarcia.myfriendz
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.egarcia.myfriendz.addFriend.viewmodel.AddFriendViewModel
+import com.egarcia.myfriendz.showFriend.utils.DEFAULT_MONTHS_LAST_CONTACTED
 import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.model.FriendDao
 import com.egarcia.myfriendz.model.FriendDatabase
@@ -21,6 +22,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDate
 
 @ExperimentalCoroutinesApi
 class AddFriendViewModelTest {
@@ -58,9 +60,10 @@ class AddFriendViewModelTest {
     }
 
     private fun createTestFriend(): Friend {
+        val date = LocalDate.parse("2023-01-01")
         return Friend(
             "John",
-            "Doe",
+            date,
             "123-456-7890",
             "john.doe@example.com",
             "New York",
@@ -89,6 +92,6 @@ class AddFriendViewModelTest {
         val initialFriend = viewModel.friend.value
 
         // Then
-        assertEquals(Friend("", "", "", "", "", ""), initialFriend)
+        assertEquals(Friend("", LocalDate.now().minusMonths(DEFAULT_MONTHS_LAST_CONTACTED), "", "", "", ""), initialFriend)
     }
 }
