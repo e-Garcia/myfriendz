@@ -18,6 +18,18 @@
         android:padding="@dimen/m_spacing"
         tools:context=".view.FriendDetailsFragment">
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/editFriendButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/m_spacing"
+            android:layout_marginEnd="@dimen/m_spacing"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/edit_friend_button_content_description"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -153,6 +165,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/comments_icon"
                     app:layout_constraintTop_toTopOf="@id/comments_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:ellipsize="end"
                     tools:text="@tools:sample/lorem/random" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
