@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/m_spacing"
+        app:friendContactStatusBackground="@{friend.lastContacted}"
         android:onClick="@{(view) -> actionHandler.onFriendClicked(view, friend)}">
 
         <TextView
@@ -31,9 +32,14 @@
         <TextView
             android:id="@+id/name"
             style="@style/CardText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/m_spacing"
             android:text="@{friend.name}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textSize="@dimen/l_text_title"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/last_contacted"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/full_names" />

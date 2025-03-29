@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.model.FriendDao
+import com.egarcia.myfriendz.showFriend.utils.DEFAULT_MONTHS_LAST_CONTACTED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
-private const val DEFAULT_MONTHS_LAST_CONTACTED = 6L
 
 @HiltViewModel
 class AddFriendViewModel @Inject constructor(
