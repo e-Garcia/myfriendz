@@ -5,4 +5,6 @@
     <dimen name="l_spacing">20dp</dimen>
     <dimen name="xl_spacing">24dp</dimen>
     <dimen name="l_text_title">16sp</dimen>
+    <dimen name="m_corner_radius">8dp</dimen>
+    <dimen name="m_elevation">4dp</dimen>
 </resources>
