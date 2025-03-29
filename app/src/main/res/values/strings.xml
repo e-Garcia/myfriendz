@@ -14,4 +14,14 @@
     <string name="phone_icon_description">Phone icon</string>
     <string name="frequency_icon_description">Frequency icon</string>
     <string name="last_contacted_icon_description">Last contacted icon</string>
+    <string name="edit_friend_button_content_description">Edit Friend</string>
+    <string name="error_updating_friend">Error updating friend</string>
+    <string name="btn_save_text">Save</string>
+    <string name="hint_phone_input">Phone</string>
+    <string name="hint_input_email">Email</string>
+    <string name="hint_input_name">Name</string>
+    <string name="hint_comments">Add comments here</string>
+    <string name="hint_friend_since">Update</string>
+    <string name="select_friend_since">Select Friend Since</string>
+    <string name="selected_date_formatted">Last Contacted: %1$s</string>
 </resources>

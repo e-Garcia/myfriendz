@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.FragmentFriendDetailsBinding
+import com.egarcia.myfriendz.editFriend.FriendDetailsFragmentDirections
 import com.egarcia.myfriendz.viewmodel.FriendsDetailViewModel
 import com.egarcia.myfriendz.showFriend.view.FriendsListFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,6 +43,10 @@ class FriendDetailsFragment : Fragment() {
         }
         viewModel.fetch(friendUuid)
         observeViewModel()
+        dataBinding.editFriendButton.setOnClickListener {
+            val action = FriendDetailsFragmentDirections.actionEditFriendFragment(friendUuid)
+            findNavController().navigate(action)
+        }
     }
 
     private fun observeViewModel() {

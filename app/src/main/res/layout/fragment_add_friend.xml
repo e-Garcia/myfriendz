@@ -54,11 +54,13 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="8sp"
+                android:autofillHints="name"
+                android:hint="@string/hint_input_name"
+                android:inputType="text"
                 android:text="@={viewmodel.friend.name}"
-                android:padding="16dp"
-                android:textSize="20sp"
-                tools:text="@tools:sample/full_names" />
+                android:padding="@dimen/m_spacing"
+                android:textSize="@dimen/xl_text_title"
+                tools:text="@tools:sample/full_names"/>
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

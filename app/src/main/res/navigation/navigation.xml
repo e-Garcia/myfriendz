@@ -31,4 +31,14 @@
         android:id="@+id/addFriendFragment"
         android:name="com.egarcia.myfriendz.addFriend.view.AddFriendFragment"
         android:label="AddFriendFragment" />
+
+    <fragment
+        android:id="@+id/editFriendFragment"
+        android:name="com.egarcia.myfriendz.editFriend.view.EditFriendFragment"
+        android:label="fragment_edit_friend"
+        tools:layout="@layout/fragment_edit_friend">
+        <argument
+            android:name="friendUuid"
+            app:argType="integer" />
+    </fragment>
 </navigation>
