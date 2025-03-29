@@ -1,68 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
+
         <variable
             name="friendDetails"
             type="com.egarcia.myfriendz.model.Friend" />
     </data>
 
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:padding="@dimen/m_spacing"
         tools:context=".view.FriendDetailsFragment">
 
-        <TextView
-            android:id="@+id/name_detail"
-            style="@style/Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{friendDetails.name}"
-            tools:text="@tools:sample/full_names" />
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:cardBackgroundColor="@color/card_background"
+            app:cardCornerRadius="@dimen/m_corner_radius"
+            app:cardElevation="@dimen/m_elevation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            android:id="@+id/last_contacted_detail"
-            style="@style/Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{friendDetails.lastContactedFormatted}"
-            tools:text="@sample/last_contacted" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/m_spacing">
 
-        <TextView
-            android:id="@+id/frequency_detail"
-            style="@style/Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{friendDetails.frequency}"
-            tools:text="@sample/last_contacted" />
+                <TextView
+                    android:id="@+id/name_detail"
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@{friendDetails.name}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@tools:sample/full_names" />
 
-        <TextView
-            android:id="@+id/phone_detail"
-            style="@style/Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{friendDetails.phone}"
-            tools:text="@tools:sample/us_phones" />
+                <ImageView
+                    android:id="@+id/last_contacted_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s_spacing"
+                    android:src="@drawable/ic_clock"
+                    android:contentDescription="@string/last_contacted_icon_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/name_detail" />
 
-        <TextView
-            android:id="@+id/email_detail"
-            style="@style/Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{friendDetails.email}"
-            tools:text="@sample/emails" />
+                <TextView
+                    android:id="@+id/last_contacted_detail"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/s_spacing"
+                    android:text="@{friendDetails.lastContactedFormatted}"
+                    android:visibility="@{friendDetails.lastContactedFormatted.isEmpty ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/last_contacted_icon"
+                    app:layout_constraintTop_toTopOf="@id/last_contacted_icon"
+                    tools:text="@sample/last_contacted" />
 
-        <TextView
-            android:id="@+id/comments_detail"
-            style="@style/Text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{friendDetails.comments}"
-            tools:text="@tools:sample/lorem/random" />
+                <ImageView
+                    android:id="@+id/frequency_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s_spacing"
+                    android:src="@drawable/ic_frequency"
+                    android:contentDescription="@string/frequency_icon_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/last_contacted_detail" />
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/frequency_detail"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/s_spacing"
+                    android:text="@{friendDetails.frequency.isEmpty? @string/frequency_hint : friendDetails.frequency}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/frequency_icon"
+                    app:layout_constraintTop_toTopOf="@id/frequency_icon"
+                    tools:text="@sample/last_contacted" />
+
+                <ImageView
+                    android:id="@+id/phone_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s_spacing"
+                    android:src="@drawable/ic_phone"
+                    android:contentDescription="@string/phone_icon_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/frequency_detail" />
+
+                <TextView
+                    android:id="@+id/phone_detail"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/s_spacing"
+                    android:text="@{friendDetails.phone.isEmpty? @string/phone_hint : friendDetails.phone}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/phone_icon"
+                    app:layout_constraintTop_toTopOf="@id/phone_icon"
+                    tools:text="@tools:sample/us_phones" />
+
+                <ImageView
+                    android:id="@+id/email_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s_spacing"
+                    android:src="@drawable/ic_email"
+                    android:contentDescription="@string/email_icon_description"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/phone_detail" />
+
+                <TextView
+                    android:id="@+id/email_detail"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/s_spacing"
+                    android:text="@{friendDetails.email.isEmpty ? @string/email_hint : friendDetails.email}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/email_icon"
+                    app:layout_constraintTop_toTopOf="@id/email_icon"
+                    tools:text="@sample/emails" />
+
+                <ImageView
+                    android:id="@+id/comments_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/s_spacing"
+                    android:contentDescription="@string/comments_icon_description"                    android:src="@drawable/ic_comments"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/email_detail" />
+
+                <TextView
+                    android:id="@+id/comments_detail"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/s_spacing"
+                    android:text="@{friendDetails.comments.isEmpty ? @string/comments_hint : friendDetails.comments}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/comments_icon"
+                    app:layout_constraintTop_toTopOf="@id/comments_icon"
+                    tools:text="@tools:sample/lorem/random" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

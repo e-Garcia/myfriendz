@@ -4,4 +4,14 @@
     <string name="add_friend">Add friend</string>
     <string name="description_profile_picture">Profile picture</string>
     <string name="description_save_friend">Save Friend</string>
+    <string name="last_contacted_hint">No last contact date</string>
+    <string name="frequency_hint">No contact frequency data</string>
+    <string name="phone_hint">No phone number available</string>
+    <string name="email_hint">No email address</string>
+    <string name="comments_hint">No comments yet</string>
+    <string name="comments_icon_description">Comments Icon</string>
+    <string name="email_icon_description">Email icon</string>
+    <string name="phone_icon_description">Phone icon</string>
+    <string name="frequency_icon_description">Frequency icon</string>
+    <string name="last_contacted_icon_description">Last contacted icon</string>
 </resources>
