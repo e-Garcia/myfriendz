@@ -24,4 +24,10 @@
     <string name="hint_friend_since">Update</string>
     <string name="select_friend_since">Select Friend Since</string>
     <string name="selected_date_formatted">Last Contacted: %1$s</string>
+
+
+    <string name="error_message">Error: %1$s</string>
+    <string name="error_fetching_data">Failed to load friends list. Please check your connection.</string>
+    <string name="error_updating_data">Failed to update friend information.</string>
+    <string name="error_deleting_data">Failed to delete friend.</string>
 </resources>

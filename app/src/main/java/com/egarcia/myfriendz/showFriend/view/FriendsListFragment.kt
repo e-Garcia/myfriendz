@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egarcia.myfriendz.databinding.FragmentListBinding
+import com.egarcia.myfriendz.showFriend.viewmodel.FriendListState
 import com.egarcia.myfriendz.showFriend.viewmodel.FriendsListViewModel
 import com.egarcia.myfriendz.model.Friend
 import androidx.navigation.findNavController
@@ -52,9 +53,35 @@ class FriendsListFragment : Fragment(), FriendListActionHandler {
     }
 
     private fun observeViewModel() {
-        viewModel.friends.observe(viewLifecycleOwner) { friends ->
-            friends?.let {
-                friendsAdapter.submitList(it)
+        viewModel.friendsState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is FriendListState.Loading -> {
+                    // Show the progress bar
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.friendsRecyclerView.visibility = View.GONE
+                    binding.errorTextView.visibility = View.GONE
+                    binding.errorImageView.visibility = View.GONE
+                }
+
+                is FriendListState.Success -> {
+                    // Hide the progress bar
+                    binding.progressBar.visibility = View.GONE
+                    binding.errorTextView.visibility = View.GONE
+                    binding.errorImageView.visibility = View.GONE
+                    binding.friendsRecyclerView.visibility = View.VISIBLE
+
+                    friendsAdapter.submitList(state.friends)
+                }
+
+                is FriendListState.Error -> {
+                    // Hide the progress bar
+                    binding.progressBar.visibility = View.GONE
+                    binding.friendsRecyclerView.visibility = View.GONE
+                    binding.errorTextView.visibility = View.VISIBLE
+                    binding.errorImageView.visibility = View.VISIBLE
+                    // Show error message
+                    binding.errorTextView.text = getString(state.messageRes)
+                }
             }
         }
     }
@@ -66,7 +93,8 @@ class FriendsListFragment : Fragment(), FriendListActionHandler {
     }
 
     override fun onFriendClicked(view: View, friend: Friend) {
-        val action = FriendsListFragmentDirections.actionListFragmentToFriendDetailsFragment(friend.uuid)
+        val action =
+            FriendsListFragmentDirections.actionListFragmentToFriendDetailsFragment(friend.uuid)
         view.findNavController().navigate(action)
     }
 
