@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 /.idea/jarRepositories.xml
+/app/google-services.json

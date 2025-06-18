@@ -41,6 +41,7 @@ android {
 dependencies {
 
     implementation(libs.androidx.room.runtime)
+    implementation libs.firebase.database
     ksp(libs.androidx.room.compiler)
 
     // optional - Kotlin Extensions and Coroutines support for Room
@@ -60,6 +61,12 @@ dependencies {
     implementation(libs.androidx.preference.ktx)
     // ViewModel Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    // Firebase Database
+    implementation(libs.firebase.database.ktx)
+    // Firebase Firestore
+    implementation(libs.firebase.firestore.ktx)
+    // Firebase Storage for images/files
+    implementation(libs.firebase.storage.ktx)
 
     // DI
     implementation(libs.hilt.android)
@@ -73,3 +80,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }
+
+apply plugin: 'com.google.gms.google-services'

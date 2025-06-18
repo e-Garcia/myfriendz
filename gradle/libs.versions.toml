@@ -5,6 +5,8 @@ constraintLayoutVersion = "2.2.1"
 coreKtxVersion = "1.15.0"
 coreTestingVersion = "2.2.0"
 espressoCoreVersion = "3.6.1"
+firebaseFirestoreKtxVersion = "25.0.0"
+firebaseStorageKtxVersion = "21.0.0"
 gradle = "8.9.1"
 junitVersion = "4.13.2"
 kotlin = "2.1.20"
@@ -18,6 +20,8 @@ navVersion = "2.8.9"
 preferenceVersion = "1.2.1"
 roomVersion = "2.6.1"
 hilt = "2.51.1"
+googleGmsGoogleServicesVersion = "4.4.2"
+firebaseDatabaseVersion = "21.0.0"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
@@ -35,6 +39,9 @@ androidx-preference-ktx = { module = "androidx.preference:preference-ktx", versi
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
+firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabaseVersion" }
+firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebaseFirestoreKtxVersion" }
+firebase-storage-ktx = { module = "com.google.firebase:firebase-storage-ktx", version.ref = "firebaseStorageKtxVersion" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { module = "junit:junit", version.ref = "junitVersion" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlibVersion" }
@@ -43,8 +50,10 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
 navigation-safe-args = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigation" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabaseVersion" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version = "2.1.20-1.0.32" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServicesVersion" }

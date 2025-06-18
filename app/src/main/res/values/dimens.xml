@@ -9,4 +9,5 @@
     <dimen name="xl_text_title">20sp</dimen>
     <dimen name="m_corner_radius">8dp</dimen>
     <dimen name="m_elevation">4dp</dimen>
+    <dimen name="error_icon_size">100dp</dimen>
 </resources>

@@ -30,4 +30,5 @@
     <string name="error_fetching_data">Failed to load friends list. Please check your connection.</string>
     <string name="error_updating_data">Failed to update friend information.</string>
     <string name="error_deleting_data">Failed to delete friend.</string>
+    <string name="error_image_description">Error Icon</string>
 </resources>

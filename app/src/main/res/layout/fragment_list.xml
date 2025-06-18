@@ -24,7 +24,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_friend"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -38,8 +39,9 @@
 
         <ImageView
             android:id="@+id/errorImageView"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/error_icon_size"
+            android:layout_height="@dimen/error_icon_size"
+            android:contentDescription="@string/error_image_description"
             android:visibility="gone"
             android:src="@drawable/error_icon"
             app:layout_constraintBottom_toTopOf="@+id/errorTextView"
