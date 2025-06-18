@@ -34,8 +34,8 @@ class NetworkMonitor @Inject constructor(@ApplicationContext context: Context) {
                 _isConnected.postValue(false)
             }
         })
-        // Set initial value
-        _isConnected.value = connectivityManager.activeNetworkInfo?.isConnected == true
+        val activeNetwork = connectivityManager.activeNetwork
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        _isConnected.value = networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     }
 }
-
