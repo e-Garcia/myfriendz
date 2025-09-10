@@ -61,6 +61,20 @@
 * `build.gradle`: Project-level Gradle configuration.
 * `settings.gradle`: Settings for project modules.
 
+## Architecture
+* The project follows a clean architecture pattern to separate concerns and enhance maintainability. 
+* The structure is as follows:
+|------------------------|
+|     Presentation       | → ViewModels, UI, Screens (e.g., Jetpack Compose)
+|------------------------|
+|     Domain             | → UseCases, Entities (business rules, platform-agnostic)
+|------------------------|
+|     Data               | → Repositories, DataSources (network/db), DTOs
+|------------------------|
+|     Frameworks / APIs  | → Retrofit, Room, Firebase, Hilt (external interfaces)
+|------------------------|
+
+
 ## Contributing
 
 Contributions are welcome! Here's how you can help:
