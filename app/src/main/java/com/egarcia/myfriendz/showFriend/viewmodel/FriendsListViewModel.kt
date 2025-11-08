@@ -1,18 +1,19 @@
 package com.egarcia.myfriendz.showFriend.viewmodel
 
 import androidx.annotation.StringRes
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.egarcia.myfriendz.R
+import com.egarcia.myfriendz.core.di.IoDispatcher
+import com.egarcia.myfriendz.domain.usecase.FriendUseCase
 import com.egarcia.myfriendz.model.Friend
-import com.egarcia.myfriendz.model.FriendDao
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
 import javax.inject.Inject
 
 sealed class FriendListState {
@@ -23,11 +24,16 @@ sealed class FriendListState {
 
 @HiltViewModel
 class FriendsListViewModel @Inject constructor(
-    private val friendDao: FriendDao
+    private val friendUseCase: FriendUseCase,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _friendsState = MutableLiveData<FriendListState>()
-    val friendsState: LiveData<FriendListState> = _friendsState
+    private val _friendsState = MutableStateFlow<FriendListState>(FriendListState.Loading)
+    val friendsState: StateFlow<FriendListState> = _friendsState.asStateFlow()
+
+    init {
+        refresh()
+    }
 
     fun refresh() {
         fetchFromDatabase()
@@ -37,12 +43,11 @@ class FriendsListViewModel @Inject constructor(
         viewModelScope.launch {
             _friendsState.value = FriendListState.Loading
             try {
-                withContext(Dispatchers.IO) {
-                    friend.lastContacted = LocalDate.now()
-                    friendDao.updateFriend(friend)
-                    fetchFromDatabase()
+                withContext(ioDispatcher) {
+                    friendUseCase.updateFriendAsContacted(friend)
                 }
-            } catch (e: Exception) {
+                fetchFromDatabase()
+            } catch (_: Exception) {
                 _friendsState.value = FriendListState.Error(R.string.error_updating_data)
             }
         }
@@ -52,11 +57,11 @@ class FriendsListViewModel @Inject constructor(
         viewModelScope.launch {
             _friendsState.value = FriendListState.Loading
             try {
-                withContext(Dispatchers.IO) {
-                    friendDao.deleteFriend(friend.uuid)
-                    fetchFromDatabase()
+                withContext(ioDispatcher) {
+                    friendUseCase.deleteFriend(friend.uuid)
                 }
-            } catch (e: Exception) {
+                fetchFromDatabase()
+            } catch (_: Exception) {
                 _friendsState.value = FriendListState.Error(R.string.error_deleting_data)
             }
         }
@@ -66,12 +71,12 @@ class FriendsListViewModel @Inject constructor(
         viewModelScope.launch {
             _friendsState.value = FriendListState.Loading
             try {
-                withContext(Dispatchers.IO) {
-                    val friendsList = friendDao.getAllFriends()
-                    _friendsState.postValue(FriendListState.Success(friendsList))
+                val friendsList = withContext(ioDispatcher) {
+                    friendUseCase.getAllFriends()
                 }
-            } catch (e: Exception) {
-                _friendsState.postValue(FriendListState.Error(R.string.error_fetching_data))
+                _friendsState.value = FriendListState.Success(friendsList)
+            } catch (_: Exception) {
+                _friendsState.value = FriendListState.Error(R.string.error_fetching_data)
             }
         }
     }

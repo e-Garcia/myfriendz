@@ -2,8 +2,11 @@ package com.egarcia.myfriendz
 
 import android.content.Context
 import androidx.room.Room
+import com.egarcia.myfriendz.data.repository.FriendRepositoryImpl
+import com.egarcia.myfriendz.domain.repository.FriendRepository
 import com.egarcia.myfriendz.model.FriendDao
 import com.egarcia.myfriendz.model.FriendDatabase
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,4 +32,15 @@ object DatabaseModule {
     fun provideFriendDao(database: FriendDatabase): FriendDao {
         return database.friendDao()
     }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+
+    @Binds
+    @Singleton
+    abstract fun bindFriendRepository(
+        friendRepositoryImpl: FriendRepositoryImpl
+    ): FriendRepository
 }

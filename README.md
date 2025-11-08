@@ -62,17 +62,99 @@
 * `settings.gradle`: Settings for project modules.
 
 ## Architecture
-* The project follows a clean architecture pattern to separate concerns and enhance maintainability. 
-* The structure is as follows:
+
+The project follows a **clean architecture pattern** to separate concerns and enhance maintainability. The architecture enforces clear boundaries between layers and ensures the domain layer remains platform-agnostic.
+
+### Architecture Layers
+
+```
 |------------------------|
-|     Presentation       | → ViewModels, UI, Screens (e.g., Jetpack Compose)
+|    Presentation        | → ViewModels, Fragments, UI (Data Binding)
 |------------------------|
-|     Domain             | → UseCases, Entities (business rules, platform-agnostic)
+         ↓ (depends on)
 |------------------------|
-|     Data               | → Repositories, DataSources (network/db), DTOs
+|      Domain            | → UseCases, Repository Interfaces
 |------------------------|
-|     Frameworks / APIs  | → Retrofit, Room, Firebase, Hilt (external interfaces)
+         ↓ (implements)
 |------------------------|
+|       Data             | → Repository Implementations, Room DAOs
+|------------------------|
+         ↓ (uses)
+|------------------------|
+|  Frameworks / APIs     | → Room, Hilt (external dependencies)
+|------------------------|
+```
+
+### Key Architectural Components
+#### Presentation Layer (`app/src/main/java/.../view`, `viewmodel`)
+- **ViewModels**: Manage UI state and business logic coordination
+  - Use **StateFlow** for reactive state management
+  - Inject `FriendUseCase` via Hilt dependency injection
+  - Platform-agnostic (no Android context dependencies)
+- **Fragments**: Handle UI rendering and user interactions
+  - Use Data Binding for declarative UI
+  - Observe StateFlow from ViewModels using `lifecycleScope.launch`
+- **Example**: `FriendsListViewModel` injects `FriendUseCase` and calls its methods
+
+#### Domain Layer (`app/src/main/java/.../domain`)
+- **Use Case**: `FriendUseCase` - Unified class for all friend operations
+  - Platform-agnostic business logic
+  - Single point of interaction between presentation and data layers
+  - Methods:
+    - `getAllFriends()`: Retrieve all friends
+    - `getFriend(id)`: Retrieve a specific friend
+    - `addFriend(friend)`: Add a new friend
+    - `updateFriendAsContacted(friend)`: Mark friend as contacted (updates lastContacted)
+    - `updateFriendDetails(friend)`: Edit friend details (preserves lastContacted)
+    - `deleteFriend(id)`: Remove a friend
+- **Repository Interface**: `FriendRepository` - Defines contracts for data access
+  - Abstract data source operations
+
+#### Data Layer (`app/src/main/java/.../data`, `model`)
+- **Repository Implementations**: Concrete data access implementations
+  - `FriendRepositoryImpl`: Implements `FriendRepository` using Room DAO
+- **DAOs**: Room database access objects
+  - `FriendDao`: CRUD operations for Friend entity
+- **Entities**: Room database entities
+  - `Friend`: Core data model with Room annotations
+
+#### Dependency Injection (Hilt)
+- **Production Modules**:
+  - `DatabaseModule`: Provides Room database and DAOs
+  - `RepositoryModule`: Binds `FriendRepository` interface to `FriendRepositoryImpl`
+- **Test Modules**:
+  - `TestRepositoryModule`: Provides mock repository for unit tests
+  - Uses `@TestInstallIn` to replace production modules during testing
+
+### Data Flow Example
+
+```
+User Action (Fragment)
+    ↓
+ViewModel.updateFriend()
+    ↓
+FriendUseCase.updateFriendAsContacted(friend)
+    ↓
+FriendRepository.updateFriend()
+    ↓
+FriendRepositoryImpl → FriendDao
+    ↓
+Room Database
+    ↓
+StateFlow.emit(Success)
+    ↓
+Fragment observes state
+    ↓
+UI Update
+```
+
+### Testing Strategy
+
+- **ViewModels**: Test with mocked `FriendUseCase` using MockK
+- **Use Case**: Test with mocked `FriendRepository` using MockK
+- **Repository**: Test with mocked DAO or in-memory database
+- **Unit tests**: Use `kotlinx-coroutines-test` with `StandardTestDispatcher` or `UnconfinedTestDispatcher`
+- **Test isolation**: Hilt test modules provide mocked dependencies automatically
 
 
 ## Contributing

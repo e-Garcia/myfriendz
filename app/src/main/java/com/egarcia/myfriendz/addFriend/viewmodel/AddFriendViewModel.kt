@@ -3,8 +3,8 @@ package com.egarcia.myfriendz.addFriend.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.egarcia.myfriendz.domain.usecase.FriendUseCase
 import com.egarcia.myfriendz.model.Friend
-import com.egarcia.myfriendz.model.FriendDao
 import com.egarcia.myfriendz.showFriend.utils.DEFAULT_MONTHS_LAST_CONTACTED
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddFriendViewModel @Inject constructor(
-    private val friendDao: FriendDao
+    private val friendUseCase: FriendUseCase
 ) : ViewModel() {
     private val lastContacted: LocalDate = LocalDate.now().minusMonths(DEFAULT_MONTHS_LAST_CONTACTED)
     val friend = MutableLiveData(Friend("", lastContacted, "", "", "", ""))
@@ -22,7 +22,7 @@ class AddFriendViewModel @Inject constructor(
     fun addFriend() {
         viewModelScope.launch {
             friend.value?.let {
-                friendDao.addFriend(it)
+                friendUseCase.addFriend(it)
             }
         }
     }
