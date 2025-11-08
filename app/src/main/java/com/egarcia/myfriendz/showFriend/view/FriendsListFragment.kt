@@ -7,14 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.egarcia.myfriendz.databinding.FragmentListBinding
+import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.showFriend.viewmodel.FriendListState
 import com.egarcia.myfriendz.showFriend.viewmodel.FriendsListViewModel
-import com.egarcia.myfriendz.model.Friend
-import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 /**
  * Responsible for displaying a list of friends along their details such as their full name
@@ -53,34 +55,36 @@ class FriendsListFragment : Fragment(), FriendListActionHandler {
     }
 
     private fun observeViewModel() {
-        viewModel.friendsState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is FriendListState.Loading -> {
-                    // Show the progress bar
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.friendsRecyclerView.visibility = View.GONE
-                    binding.errorTextView.visibility = View.GONE
-                    binding.errorImageView.visibility = View.GONE
-                }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.friendsState.collect { state ->
+                when (state) {
+                    is FriendListState.Loading -> {
+                        // Show the progress bar
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.friendsRecyclerView.visibility = View.GONE
+                        binding.errorTextView.visibility = View.GONE
+                        binding.errorImageView.visibility = View.GONE
+                    }
 
-                is FriendListState.Success -> {
-                    // Hide the progress bar
-                    binding.progressBar.visibility = View.GONE
-                    binding.errorTextView.visibility = View.GONE
-                    binding.errorImageView.visibility = View.GONE
-                    binding.friendsRecyclerView.visibility = View.VISIBLE
+                    is FriendListState.Success -> {
+                        // Hide the progress bar
+                        binding.progressBar.visibility = View.GONE
+                        binding.errorTextView.visibility = View.GONE
+                        binding.errorImageView.visibility = View.GONE
+                        binding.friendsRecyclerView.visibility = View.VISIBLE
 
-                    friendsAdapter.submitList(state.friends)
-                }
+                        friendsAdapter.submitList(state.friends)
+                    }
 
-                is FriendListState.Error -> {
-                    // Hide the progress bar
-                    binding.progressBar.visibility = View.GONE
-                    binding.friendsRecyclerView.visibility = View.GONE
-                    binding.errorTextView.visibility = View.VISIBLE
-                    binding.errorImageView.visibility = View.VISIBLE
-                    // Show error message
-                    binding.errorTextView.text = getString(state.messageRes)
+                    is FriendListState.Error -> {
+                        // Hide the progress bar
+                        binding.progressBar.visibility = View.GONE
+                        binding.friendsRecyclerView.visibility = View.GONE
+                        binding.errorTextView.visibility = View.VISIBLE
+                        binding.errorImageView.visibility = View.VISIBLE
+                        // Show error message
+                        binding.errorTextView.text = getString(state.messageRes)
+                    }
                 }
             }
         }

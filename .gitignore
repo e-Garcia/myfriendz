@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 /.idea/jarRepositories.xml
+
+
+# JetBrains GitHub Copilot plugin local files
+.idea/copilot*
+.idea/*copilot*.xml

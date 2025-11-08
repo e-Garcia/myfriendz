@@ -43,6 +43,7 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
 navigation-safe-args = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigation" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version = "2.1.20-1.0.32" }
