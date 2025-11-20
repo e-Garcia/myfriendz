@@ -7,7 +7,6 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
 object CoroutineDispatchersModule {
