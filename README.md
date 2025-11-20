@@ -1,4 +1,3 @@
-
 # MyFriendz
 
 **MyFriendz** is an Android application designed to help you stay connected with your friends by sending timely reminders to reach out. In our fast-paced lives, it's easy to lose touch; MyFriendz ensures that doesn't happen.
@@ -123,8 +122,9 @@ The project follows a **clean architecture pattern** to separate concerns and en
   - `DatabaseModule`: Provides Room database and DAOs
   - `RepositoryModule`: Binds `FriendRepository` interface to `FriendRepositoryImpl`
 - **Test Modules**:
-  - `TestRepositoryModule`: Provides mock repository for unit tests
-  - Uses `@TestInstallIn` to replace production modules during testing
+  - `TestRepositoryModule`: Provides a mock repository for Hilt-based tests (primarily for integration/DI tests).
+    - Note: For pure unit tests, prefer manually mocking `FriendRepository`/`FriendUseCase` or using lightweight test doubles instead of relying on test Hilt modules that require DI wiring.
+  - Uses `@TestInstallIn` to replace production modules during Hilt tests
 
 ### Data Flow Example
 
