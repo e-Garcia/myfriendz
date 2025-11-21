@@ -9,6 +9,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -32,11 +33,17 @@ class AddFriendViewModelTest {
     @MockK
     private lateinit var friendUseCase: FriendUseCase
 
+    @MockK
+    private lateinit var timeProvider: com.egarcia.myfriendz.util.TimeProvider
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
 
-        viewModel = AddFriendViewModel(friendUseCase)
+        // Make TimeProvider deterministic for the test (use current date)
+        every { timeProvider.today() } returns LocalDate.now()
+
+        viewModel = AddFriendViewModel(friendUseCase, timeProvider)
     }
 
     private fun createTestFriend(): Friend {
@@ -56,10 +63,15 @@ class AddFriendViewModelTest {
         // Given
         val friend = createTestFriend()
         coEvery { friendUseCase.addFriend(any()) } returns Unit
-        viewModel.friend.value = friend
+        // Populate the draft via intent-style field updates
+        viewModel.onNameChanged(friend.name)
+        viewModel.onFrequencyChanged(friend.frequency)
+        viewModel.onPhoneChanged(friend.phone)
+        viewModel.onEmailChanged(friend.email)
+        viewModel.onCommentsChanged(friend.comments)
 
         // When
-        viewModel.addFriend()
+        viewModel.onSaveClicked()
         advanceUntilIdle()
 
         // Then
@@ -69,18 +81,21 @@ class AddFriendViewModelTest {
     @Test
     fun `initial friend value is empty`() {
         // When
-        val initialFriend = viewModel.friend.value
+        val initialState = viewModel.state.value
 
         // Then
-        Assert.assertEquals(
-            Friend(
-                "",
-                LocalDate.now().minusMonths(DEFAULT_MONTHS_LAST_CONTACTED),
-                "",
-                "",
-                "",
-                ""
-            ), initialFriend
+        val expectedFriend = Friend(
+            "",
+            LocalDate.now().minusMonths(DEFAULT_MONTHS_LAST_CONTACTED),
+            "",
+            "",
+            "",
+            ""
         )
+
+        Assert.assertEquals(expectedFriend, initialState.friend)
+        Assert.assertFalse(initialState.isSaving)
+        Assert.assertNull(initialState.errorMessageRes)
+        Assert.assertFalse(initialState.isSaveSuccessful)
     }
 }

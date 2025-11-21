@@ -8,8 +8,8 @@
             name="actionHandler"
             type="com.egarcia.myfriendz.addFriend.view.AddFriendActionHandler" />
         <variable
-            name="viewmodel"
-            type="com.egarcia.myfriendz.addFriend.viewmodel.AddFriendViewModel" />
+            name="friendData"
+            type="com.egarcia.myfriendz.model.Friend" />
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                 android:autofillHints="name"
                 android:hint="@string/hint_input_name"
                 android:inputType="text"
-                android:text="@={viewmodel.friend.name}"
+                android:text="@={friendData.name}"
                 android:padding="@dimen/m_spacing"
                 android:textSize="@dimen/xl_text_title"
                 tools:text="@tools:sample/full_names"/>

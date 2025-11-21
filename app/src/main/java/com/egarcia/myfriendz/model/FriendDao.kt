@@ -1,5 +1,6 @@
 package com.egarcia.myfriendz.model
 
+import androidx.annotation.VisibleForTesting
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -23,14 +24,14 @@ interface FriendDao {
     @Update(entity = Friend::class)
     suspend fun updateFriend(friend: Friend)
 
-    @Query("DElETE FROM friends WHERE uuid = :friendId")
+    @Query("DELETE FROM friends WHERE uuid = :friendId")
     suspend fun deleteFriend(friendId: Int)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFriend(friend: Friend)
 
-    //Implemented for testing purposes only. to be deleted when done using it.
-    @Query("DElETE FROM friends")
-
+    //Implemented for testing purposes only.
+    @VisibleForTesting
+    @Query("DELETE FROM friends")
     suspend fun deleteAllFriends()
 }

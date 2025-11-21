@@ -1,5 +1,6 @@
 package com.egarcia.myfriendz.model
 
+import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -35,11 +36,15 @@ data class Friend(
         try {
             lastContacted = LocalDate.parse(date, formatter)
         } catch (e: DateTimeParseException) {
-            // Do nothing
+            Log.e(TAG, "Failed to parse date: $date with format: $APP_DATE_FORMAT", e)
             return
         } catch (e: Exception) {
-            // Do nothing
+            Log.e(TAG, "Unexpected error parsing date: $date", e)
             return
         }
+    }
+
+    companion object {
+        private const val TAG = "Friend"
     }
 }

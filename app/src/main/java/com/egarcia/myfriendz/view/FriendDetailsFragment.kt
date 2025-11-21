@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.FragmentFriendDetailsBinding
@@ -17,6 +18,7 @@ import com.egarcia.myfriendz.viewmodel.FriendsDetailViewModel
 import com.egarcia.myfriendz.showFriend.view.FriendsListFragment
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.net.toUri
+import kotlinx.coroutines.launch
 
 /**
  * Responsible for displaying a friend contact details such as full name, how frequent should the
@@ -51,18 +53,28 @@ class FriendDetailsFragment : Fragment() {
             val action = FriendDetailsFragmentDirections.actionEditFriendFragment(friendUuid)
             findNavController().navigate(action)
         }
-        dataBinding.phoneDetail.setOnClickListener {
-            viewModel.friend.value?.let { friend ->
-                dialFriend(friend)
-            }
-        }
     }
 
     private fun observeViewModel() {
-        viewModel.friend.observe(viewLifecycleOwner) { friend ->
-            friend?.let {
-                dataBinding.friendDetails = it
-                dataBinding.phoneDetail.isEnabled = it.phone.isNotEmpty()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.friendState.collect { state ->
+                when (state) {
+                    is com.egarcia.myfriendz.viewmodel.FriendDetailState.Loading -> {
+                        // Show loading if needed
+                        dataBinding.phoneDetail.isEnabled = false
+                    }
+                    is com.egarcia.myfriendz.viewmodel.FriendDetailState.Success -> {
+                        dataBinding.friendDetails = state.friend
+                        dataBinding.phoneDetail.isEnabled = state.friend.phone.isNotEmpty()
+                        dataBinding.phoneDetail.setOnClickListener {
+                            dialFriend(state.friend)
+                        }
+                    }
+                    is com.egarcia.myfriendz.viewmodel.FriendDetailState.Error -> {
+                        // Show error if needed
+                        dataBinding.phoneDetail.isEnabled = false
+                    }
+                }
             }
         }
     }

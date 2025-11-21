@@ -1,6 +1,5 @@
 package com.egarcia.myfriendz.showFriend.view
 
-import FriendsListAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -91,7 +90,8 @@ class FriendsListFragment : Fragment(), FriendListActionHandler {
     }
 
     override fun onFriendLongClicked(view: View, friend: Friend): Boolean {
-        Snackbar.make(view, "Friend ${friend.name} was updated", Snackbar.LENGTH_LONG).show()
+        val message = getString(com.egarcia.myfriendz.R.string.friend_updated_message, friend.name)
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
         viewModel.updateFriend(friend)
         return true
     }

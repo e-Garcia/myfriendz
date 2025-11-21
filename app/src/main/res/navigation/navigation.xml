@@ -26,6 +26,9 @@
             android:name="friendUuid"
             android:defaultValue="0"
             app:argType="integer"/>
+        <action
+            android:id="@+id/action_friendDetailsFragment_to_editFriendFragment"
+            app:destination="@id/editFriendFragment" />
     </fragment>
     <fragment
         android:id="@+id/addFriendFragment"

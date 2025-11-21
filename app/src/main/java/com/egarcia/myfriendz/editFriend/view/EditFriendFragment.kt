@@ -9,14 +9,17 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.egarcia.myfriendz.R
 import com.egarcia.myfriendz.databinding.FragmentEditFriendBinding
+import com.egarcia.myfriendz.editFriend.viewmodel.EditFriendState
 import com.egarcia.myfriendz.editFriend.viewmodel.EditFriendViewModel
 import com.egarcia.myfriendz.showFriend.utils.APP_DATE_FORMAT
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
@@ -63,19 +66,42 @@ class EditFriendFragment : Fragment() {
                     getString(R.string.error_updating_friend), Snackbar.LENGTH_SHORT
                 ).show()
             }
-            findNavController().popBackStack()
         }
     }
 
     private fun observeViewModel() {
-        viewModel.friend.observe(viewLifecycleOwner) { friend ->
-            friend?.let {
-                dataBinding.friend = it
-                // Update the selected date and TextView with existing date if available
-                it.lastContacted.let { lastContacted ->
-                    val lastContactedMillis = lastContacted.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-                    selectedDate = lastContactedMillis
-                    updateSelectedDateText(lastContactedMillis)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.friendState.collect { state ->
+                when (state) {
+                    is EditFriendState.Loading -> {
+                        // Show loading indicator if needed
+                        dataBinding.saveButton.isEnabled = false
+                    }
+                    is EditFriendState.Ready -> {
+                        dataBinding.friend = state.friend
+                        dataBinding.saveButton.isEnabled = true
+                        // Update the selected date and TextView with existing date if available
+                        state.friend.lastContacted.let { lastContacted ->
+                            val lastContactedMillis = lastContacted.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                            selectedDate = lastContactedMillis
+                            updateSelectedDateText(lastContactedMillis)
+                        }
+                    }
+                    is EditFriendState.Saving -> {
+                        // Show saving indicator if needed
+                        dataBinding.saveButton.isEnabled = false
+                    }
+                    is EditFriendState.Success -> {
+                        findNavController().popBackStack()
+                    }
+                    is EditFriendState.Error -> {
+                        Snackbar.make(
+                            dataBinding.root,
+                            getString(state.messageRes),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                        dataBinding.saveButton.isEnabled = true
+                    }
                 }
             }
         }

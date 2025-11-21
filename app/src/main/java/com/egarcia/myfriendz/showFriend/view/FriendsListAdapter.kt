@@ -1,3 +1,5 @@
+package com.egarcia.myfriendz.showFriend.view
+
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -6,8 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.egarcia.myfriendz.databinding.ItemFriendBinding
 import com.egarcia.myfriendz.model.Friend
-import com.egarcia.myfriendz.showFriend.view.FriendListActionHandler
-import com.egarcia.myfriendz.showFriend.view.FriendsListFragment
 import com.egarcia.myfriendz.R
 
 /**
