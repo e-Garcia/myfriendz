@@ -26,8 +26,23 @@
     <string name="selected_date_formatted">Last Contacted: %1$s</string>
 
 
+    <string name="import_contacts">Import from contacts</string>
+    <string name="import_contacts_title">Import friends</string>
+    <string name="no_contacts_available">No contacts were found on this device.</string>
+    <string name="permission_contacts_denied">Contacts access was denied. Enable it in settings to continue.</string>
+    <string name="contacts_permission_rationale">Friendz needs access to contacts to import people you already know.</string>
+    <string name="grant_permission">Grant</string>
+    <string name="select_all_contacts">Select all</string>
+    <string name="deselect_all_contacts">Deselect all</string>
+    <string name="import_selected_contacts">Import selected (%1$d)</string>
+    <string name="select_contacts_to_import">Select at least one contact to import.</string>
+    <string name="error_importing_contacts">Unable to import contacts at the moment.</string>
+    <string name="error_loading_contacts">We couldn’t read your address book right now.</string>
+
+
     <string name="error_message">Error: %1$s</string>
     <string name="error_fetching_data">Failed to load friends list. Please check your connection.</string>
     <string name="error_updating_data">Failed to update friend information.</string>
     <string name="error_deleting_data">Failed to delete friend.</string>
+    <string name="error_image_description">Failed to load friends list</string>
 </resources>

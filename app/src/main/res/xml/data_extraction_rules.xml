@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <!-- Minimal file to explicitly control backup behavior on Android 12+ -->
+    <include domain="root" path="/" />
+</data-extraction-rules>
+

@@ -5,9 +5,6 @@
 
     <data>
         <variable
-            name="actionHandler"
-            type="com.egarcia.myfriendz.addFriend.view.AddFriendActionHandler" />
-        <variable
             name="viewmodel"
             type="com.egarcia.myfriendz.addFriend.viewmodel.AddFriendViewModel" />
     </data>
@@ -51,16 +48,108 @@
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <EditText
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:autofillHints="name"
-                android:hint="@string/hint_input_name"
-                android:inputType="text"
-                android:text="@={viewmodel.friend.name}"
-                android:padding="@dimen/m_spacing"
-                android:textSize="@dimen/xl_text_title"
-                tools:text="@tools:sample/full_names"/>
+                android:orientation="vertical"
+                android:padding="@dimen/m_spacing">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/importContactButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/m_spacing"
+                    android:text="@string/import_contacts"
+                    android:onClick="@{() -> viewmodel.onImportFromContactsClicked()}" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_input_name"
+                    android:layout_marginBottom="@dimen/s_spacing">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/nameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autofillHints="name"
+                        android:inputType="text"
+                        android:text="@={viewmodel.friend.name}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/s_spacing"
+                    android:hint="@string/hint_input_email">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/emailInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:text="@={viewmodel.friend.email}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/s_spacing"
+                    android:hint="@string/hint_phone_input">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/phoneInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="phone"
+                        android:text="@={viewmodel.friend.phone}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/s_spacing"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/friendSinceTextView"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/last_contacted_hint" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/selectFriendSinceButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hint_friend_since" />
+
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_comments">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/commentsInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:text="@={viewmodel.friend.comments}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -72,7 +161,7 @@
             android:src="@drawable/ic_save"
             android:layout_margin="@dimen/m_spacing"
             android:layout_gravity="bottom|end"
-            android:onClick="@{() -> actionHandler.saveFriend()}" />
+            android:onClick="@{() -> viewmodel.onSaveClicked()}" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
