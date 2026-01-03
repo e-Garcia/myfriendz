@@ -7,7 +7,7 @@ import com.egarcia.myfriendz.domain.usecase.FetchContactUseCase
 import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.showFriend.utils.DEFAULT_MONTHS_LAST_CONTACTED
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,12 +20,15 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
+import com.egarcia.myfriendz.permissions.Permissions
+import com.egarcia.myfriendz.core.di.IoDispatcher
 
 
 @HiltViewModel
 class AddFriendViewModel @Inject constructor(
     private val friendUseCase: FriendUseCase,
-    private val fetchContactUseCase: FetchContactUseCase
+    private val fetchContactUseCase: FetchContactUseCase,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     private val lastContacted: LocalDate = LocalDate.now().minusMonths(DEFAULT_MONTHS_LAST_CONTACTED)
     val friend = androidx.lifecycle.MutableLiveData(Friend("", lastContacted, "", "", "", ""))
@@ -127,8 +130,8 @@ class AddFriendViewModel @Inject constructor(
     private fun populateContactFromUri(contactUriString: String) {
         _contactFetchState.value = ContactFetchState.Idle
         viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                fetchContactUseCase.fetchContactDetails(contactUriString, android.Manifest.permission.READ_CONTACTS)
+            val result = withContext(ioDispatcher) {
+                fetchContactUseCase.fetchContactDetails(contactUriString, Permissions.READ_CONTACTS)
             }
 
             when (result) {

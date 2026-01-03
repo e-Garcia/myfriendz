@@ -39,6 +39,12 @@ class ImportContactsAdapter(
                 visibility = if (details.isBlank()) View.GONE else View.VISIBLE
             }
 
+            // Set an accessible contentDescription on the checkbox so screen readers announce the contact name
+            binding.selectionCheckBox.contentDescription = binding.root.context.getString(
+                com.egarcia.myfriendz.R.string.select_contact_for_import,
+                contact.name
+            )
+
             binding.selectionCheckBox.apply {
                 setOnCheckedChangeListener(null)
                 isChecked = contact.isSelected

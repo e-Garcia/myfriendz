@@ -6,6 +6,9 @@ import com.egarcia.myfriendz.importContacts.model.ImportContactItem
 import com.egarcia.myfriendz.model.Friend
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -68,11 +71,155 @@ class ImportContactsViewModelTest {
         )
 
         viewModel.importSelectedContacts()
+        // Wait for ConfirmDuplicate effect
+        val confirm = withTimeout(1_000) { viewModel.effects.filterIsInstance<ImportContactsEffect.ConfirmDuplicate>().first() }
+
+        // Simulate user choosing Skip for the duplicate so import proceeds
+        viewModel.resolveDuplicate("1", ImportContactsViewModel.DuplicateDecision.Skip)
         advanceUntilIdle()
+
+        // no collector job to cancel
 
         assertEquals(1, repository.addedFriends.size)
         assertEquals("New Friend", repository.addedFriends.first().name)
         assertEquals(2, repository.getAllFriends().size)
+    }
+
+    @Test
+    fun `duplicate prompts are emitted and merge updates existing friend and imports remaining`() = runTest {
+        repository.seedFriend(
+            Friend(
+                name = "Existing Friend",
+                lastContacted = LocalDate.now(),
+                frequency = "",
+                phone = "555",
+                email = "existing@example.com",
+                comments = ""
+            ).apply { uuid = 1 }
+        )
+
+        viewModel.setContacts(
+            listOf(
+                // Ensure this contact will be detected as duplicate by matching phone
+                ImportContactItem(
+                    id = "1",
+                    name = "Existing Friend Updated",
+                    phone = "555", // same as existing to trigger duplicate
+                    email = "existing_new@example.com",
+                    isSelected = true
+                ),
+                ImportContactItem(
+                    id = "2",
+                    name = "New Friend",
+                    phone = "666",
+                    email = "new@example.com",
+                    isSelected = true
+                )
+            )
+        )
+
+        viewModel.importSelectedContacts()
+        val confirm = withTimeout(1_000) { viewModel.effects.filterIsInstance<ImportContactsEffect.ConfirmDuplicate>().first() }
+        assertEquals("1", confirm.contact.id)
+
+        // Resolve by merging
+        viewModel.resolveDuplicate("1", ImportContactsViewModel.DuplicateDecision.Merge())
+        advanceUntilIdle()
+
+        // After merge, existing friend should be updated
+        val all = repository.getAllFriends()
+        val updated = all.first { it.uuid == 1 }
+        assertEquals("Existing Friend Updated", updated.name)
+        assertEquals("555", updated.phone)
+        assertEquals("existing_new@example.com", updated.email)
+
+        // And the remaining new contact should be added
+        assertEquals(1, repository.addedFriends.size)
+        assertEquals("New Friend", repository.addedFriends.first().name)
+    }
+
+    @Test
+    fun `create new decision currently will be skipped due to duplicate re-check (ensures no crash)`() = runTest {
+        repository.seedFriend(
+            Friend(
+                name = "Existing Friend",
+                lastContacted = LocalDate.now(),
+                frequency = "",
+                phone = "555",
+                email = "existing@example.com",
+                comments = ""
+            ).apply { uuid = 1 }
+        )
+
+        viewModel.setContacts(
+            listOf(
+                ImportContactItem(
+                    id = "1",
+                    name = "Existing Friend",
+                    phone = "555",
+                    email = "existing@example.com",
+                    isSelected = true
+                ),
+                ImportContactItem(
+                    id = "2",
+                    name = "New Friend",
+                    phone = "666",
+                    email = "new@example.com",
+                    isSelected = true
+                )
+            )
+        )
+
+        viewModel.importSelectedContacts()
+        val confirm2 = withTimeout(1_000) { viewModel.effects.filterIsInstance<ImportContactsEffect.ConfirmDuplicate>().first() }
+        viewModel.resolveDuplicate(confirm2.contact.id, ImportContactsViewModel.DuplicateDecision.CreateNew)
+        advanceUntilIdle()
+
+        // The duplicate should not be added because performImport double-checks duplicates
+        assertEquals(1, repository.addedFriends.size)
+        assertEquals("New Friend", repository.addedFriends.first().name)
+    }
+
+    @Test
+    fun `skip decision skips duplicate and imports others`() = runTest {
+        repository.seedFriend(
+            Friend(
+                name = "Existing Friend",
+                lastContacted = LocalDate.now(),
+                frequency = "",
+                phone = "555",
+                email = "existing@example.com",
+                comments = ""
+            ).apply { uuid = 1 }
+        )
+
+        viewModel.setContacts(
+            listOf(
+                ImportContactItem(
+                    id = "1",
+                    name = "Existing Friend",
+                    phone = "555",
+                    email = "existing@example.com",
+                    isSelected = true
+                ),
+                ImportContactItem(
+                    id = "2",
+                    name = "New Friend",
+                    phone = "666",
+                    email = "new@example.com",
+                    isSelected = true
+                )
+            )
+        )
+
+        viewModel.importSelectedContacts()
+        val confirm3 = withTimeout(1_000) { viewModel.effects.filterIsInstance<ImportContactsEffect.ConfirmDuplicate>().first() }
+        viewModel.resolveDuplicate(confirm3.contact.id, ImportContactsViewModel.DuplicateDecision.Skip)
+        advanceUntilIdle()
+
+        // Only the new friend should be added
+        assertEquals(1, repository.addedFriends.size)
+        assertEquals("New Friend", repository.addedFriends.first().name)
     }
 }
 

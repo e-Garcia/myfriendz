@@ -78,4 +78,7 @@ dependencies {
     kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    // libphonenumber for robust phone parsing/normalization
+    implementation(libs.libphonenumber)
 }

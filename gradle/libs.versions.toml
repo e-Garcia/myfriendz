@@ -11,6 +11,7 @@ kotlin = "2.1.20"
 kotlinStdlibVersion = "2.1.20"
 kotlinxCoroutinesTestVersion = "1.10.2"
 legacySupportV4 = "1.0.0"
+libphonenumberVersion = "8.13.12"
 lifecycleVersion = "2.8.7"
 mockkVersion = "1.13.8"
 navVersion = "2.8.9"
@@ -40,6 +41,7 @@ gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 junit = { module = "junit:junit", version.ref = "junitVersion" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinStdlibVersion" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTestVersion" }
+libphonenumber = { module = "com.googlecode.libphonenumber:libphonenumber", version.ref = "libphonenumberVersion" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
 navigation-safe-args = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navVersion" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }

@@ -11,6 +11,7 @@ import com.egarcia.myfriendz.domain.usecase.FriendUseCase
 import com.egarcia.myfriendz.importContacts.model.ImportContactItem
 import com.egarcia.myfriendz.model.Friend
 import com.egarcia.myfriendz.showFriend.utils.DEFAULT_MONTHS_LAST_CONTACTED
+import com.egarcia.myfriendz.importContacts.utils.DuplicateChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,6 +46,8 @@ sealed class ImportContactsEffect {
         val quantity: Int,
         val formatArgs: List<Any> = emptyList()
     ) : ImportContactsEffect()
+
+    data class ConfirmDuplicate(val existing: Friend, val contact: ImportContactItem) : ImportContactsEffect()
 }
 
 @HiltViewModel
@@ -61,6 +64,12 @@ class ImportContactsViewModel @Inject constructor(
 
     private val _effects = MutableSharedFlow<ImportContactsEffect>()
     val effects: SharedFlow<ImportContactsEffect> = _effects.asSharedFlow()
+
+    private val duplicateChecker = DuplicateChecker()
+
+    // Pending state while resolving duplicates interactively
+    private val pendingDuplicates = mutableListOf<Pair<ImportContactItem, Friend>>()
+    private val pendingToImport = mutableListOf<ImportContactItem>()
 
     fun setContacts(contacts: List<ImportContactItem>) {
         _uiState.update {
@@ -131,47 +140,113 @@ class ImportContactsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isImportInProgress = true) }
-            val result = runCatching {
-                withContext(ioDispatcher) {
-                    performImport(selected)
-                }
-            }.onFailure {
-                _uiState.update { it.copy(isImportInProgress = false) }
-                _effects.emit(
-                    ImportContactsEffect.ShowMessage(
-                        R.string.error_importing_contacts
-                    )
-                )
-            }.getOrNull()
 
-            if (result != null) {
-                _uiState.update {
-                    it.copy(
-                        contacts = it.contacts.map { contact -> contact.copy(isSelected = false) },
-                        isImportInProgress = false,
-                        errorRes = null
-                    )
+            // Partition duplicates vs toImport
+            val existingFriends = withContext(ioDispatcher) { friendUseCase.getAllFriends() }
+
+            val (duplicatesList, importList) = selected.partition { contact ->
+                duplicateChecker.isDuplicate(contact, existingFriends)
+            }
+
+            pendingDuplicates.clear()
+            pendingToImport.clear()
+            pendingToImport.addAll(importList)
+
+            // Map duplicates to (contact, matchedFriend)
+            duplicatesList.forEach { contact ->
+                // find the first matching friend for this contact
+                val matched = existingFriends.firstOrNull { f ->
+                    duplicateChecker.isDuplicate(contact, listOf(f))
                 }
-                // Emit plural-aware effect so Fragment can format with resources
-                _effects.emit(
-                    ImportContactsEffect.ShowPlural(
-                        R.plurals.import_contacts_result,
-                        result.imported,
-                        listOf(result.skipped, result.failed)
-                    )
-                )
+                matched?.let { pendingDuplicates.add(contact to it) }
+            }
+
+            if (pendingDuplicates.isNotEmpty()) {
+                // Prompt user for the first duplicate; UI will call resolveDuplicate for decisions
+                val (contact, existing) = pendingDuplicates.first()
+                _effects.emit(ImportContactsEffect.ConfirmDuplicate(existing, contact))
+                return@launch
+            }
+
+            // No duplicates to resolve, proceed with import
+            val result = withContext(ioDispatcher) { performImport(pendingToImport, existingFriends) }
+
+            handleImportResult(result)
+        }
+    }
+
+    // Called by UI when user resolves a duplicate prompt.
+    // contactId identifies the ImportContactItem.id for which a decision was made.
+    fun resolveDuplicate(contactId: String, decision: DuplicateDecision) {
+        viewModelScope.launch {
+            val pairIndex = pendingDuplicates.indexOfFirst { it.first.id == contactId }
+            if (pairIndex == -1) return@launch // nothing to do
+
+            val (contact, existing) = pendingDuplicates.removeAt(pairIndex)
+
+            when (decision) {
+                is DuplicateDecision.Merge -> {
+                    // Merge contact fields into existing friend (prefer contact non-blank values)
+                    val merged = existing.copy(
+                        name = contact.name.takeIf { it.isNotBlank() } ?: existing.name,
+                        phone = contact.phone?.takeIf { it.isNotBlank() } ?: existing.phone,
+                        email = contact.email?.takeIf { it.isNotBlank() } ?: existing.email
+                    ).apply { uuid = existing.uuid } // preserve id so repository update matches
+                    withContext(ioDispatcher) { friendUseCase.updateFriendDetails(merged) }
+                }
+                DuplicateDecision.CreateNew -> {
+                    pendingToImport.add(contact)
+                }
+                DuplicateDecision.Skip -> {
+                    // Do nothing
+                }
+            }
+
+            // If more duplicates remain, prompt next; else perform import of accumulated toImport
+            if (pendingDuplicates.isNotEmpty()) {
+                val (nextContact, nextExisting) = pendingDuplicates.first()
+                _effects.emit(ImportContactsEffect.ConfirmDuplicate(nextExisting, nextContact))
+            } else {
+                // proceed
+                val existingFriends = withContext(ioDispatcher) { friendUseCase.getAllFriends() }
+                val result = withContext(ioDispatcher) { performImport(pendingToImport, existingFriends) }
+                handleImportResult(result)
             }
         }
     }
 
-    private suspend fun performImport(selected: List<ImportContactItem>): ImportResult {
-        val existingFriends = friendUseCase.getAllFriends()
-        val duplicates = selected.filter { isDuplicate(it, existingFriends) }
-        val toImport = selected - duplicates
+    private fun handleImportResult(result: ImportResult) {
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    contacts = it.contacts.map { contact -> contact.copy(isSelected = false) },
+                    isImportInProgress = false,
+                    errorRes = null
+                )
+            }
+            _effects.emit(
+                ImportContactsEffect.ShowPlural(
+                    R.plurals.import_contacts_result,
+                    result.imported,
+                    listOf(result.skipped, result.failed)
+                )
+            )
+        }
+    }
 
+    private suspend fun performImport(selected: List<ImportContactItem>, existingFriends: List<Friend>): ImportResult {
         var imported = 0
         var failed = 0
-        toImport.forEach { contact ->
+        val duplicatesDetected = mutableListOf<ImportContactItem>()
+
+        selected.forEach { contact ->
+            // Double-check duplicates against current repository state to avoid race conditions
+            val isDup = duplicateChecker.isDuplicate(contact, existingFriends)
+            if (isDup) {
+                duplicatesDetected.add(contact)
+                return@forEach
+            }
+
             try {
                 friendUseCase.addFriend(contact.toFriend(defaultLastContacted))
                 imported++
@@ -183,7 +258,7 @@ class ImportContactsViewModel @Inject constructor(
 
         return ImportResult(
             imported = imported,
-            skipped = duplicates.size,
+            skipped = duplicatesDetected.size,
             failed = failed
         )
     }
@@ -199,36 +274,15 @@ class ImportContactsViewModel @Inject constructor(
         )
     }
 
-    private fun isDuplicate(
-        contact: ImportContactItem,
-        existingFriends: List<Friend>
-    ): Boolean {
-        val normalizedPhone = contact.phone.normalizePhone()
-        val normalizedEmail = contact.email.normalizeEmail()
-        val normalizedName = contact.name.trim().lowercase()
-
-        return existingFriends.any { friend ->
-            val friendPhone = friend.phone.normalizePhone()
-            val friendEmail = friend.email.normalizeEmail()
-            val friendName = friend.name.trim().lowercase()
-
-            (normalizedPhone.isNotBlank() && normalizedPhone == friendPhone) ||
-                (normalizedEmail.isNotBlank() && normalizedEmail == friendEmail) ||
-                (normalizedName.isNotBlank() && normalizedName == friendName && normalizedPhone.isNotBlank() && friendPhone.isNotBlank())
-        }
-    }
-
-    private fun String?.normalizePhone(): String {
-        return this?.filter { it.isDigit() } ?: ""
-    }
-
-    private fun String?.normalizeEmail(): String {
-        return this?.trim()?.lowercase() ?: ""
-    }
-
     private data class ImportResult(
         val imported: Int,
         val skipped: Int,
         val failed: Int
     )
+
+    sealed class DuplicateDecision {
+        object CreateNew : DuplicateDecision()
+        object Skip : DuplicateDecision()
+        data class Merge(val mergedFriend: Friend? = null) : DuplicateDecision()
+    }
 }

@@ -23,6 +23,7 @@ import com.egarcia.myfriendz.importContacts.viewmodel.ImportContactsEffect
 import com.egarcia.myfriendz.importContacts.viewmodel.ImportContactsUiState
 import com.egarcia.myfriendz.importContacts.viewmodel.ImportContactsViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -133,6 +134,24 @@ class ImportContactsFragment : Fragment() {
 
     private fun handleEffect(effect: ImportContactsEffect) {
         when (effect) {
+            is ImportContactsEffect.ConfirmDuplicate -> {
+                // Ask the user whether to merge into existing, create new, or skip
+                val message = "${effect.contact.name} appears to match existing friend ${effect.existing.name}.\n\nWhat would you like to do?"
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(getString(R.string.duplicate_contact_title, effect.contact.name))
+                    .setMessage(message)
+                    .setPositiveButton(getString(R.string.create_new)) { _, _ ->
+                        viewModel.resolveDuplicate(effect.contact.id, ImportContactsViewModel.DuplicateDecision.CreateNew)
+                    }
+                    .setNegativeButton(getString(R.string.merge_into_existing)) { _, _ ->
+                        viewModel.resolveDuplicate(effect.contact.id, ImportContactsViewModel.DuplicateDecision.Merge())
+                    }
+                    .setNeutralButton(getString(R.string.skip)) { _, _ ->
+                        viewModel.resolveDuplicate(effect.contact.id, ImportContactsViewModel.DuplicateDecision.Skip)
+                    }
+                    .show()
+                return
+            }
             is ImportContactsEffect.ShowMessage -> {
                 val message = if (effect.formatArgs.isEmpty()) {
                     getString(effect.messageRes)
@@ -142,10 +161,20 @@ class ImportContactsFragment : Fragment() {
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             }
             is ImportContactsEffect.ShowPlural -> {
+                // Ensure we supply exactly the arguments expected by the plural resource:
+                // import_contacts_result expects three format args: imported, skipped, failed.
+                val supplied = effect.formatArgs
+                // Start with quantity as the first arg, then the provided formatArgs. Fill missing with 0.
+                val first: Any = effect.quantity
+                val second: Any = if (supplied.size >= 1) supplied[0] else 0
+                val third: Any = if (supplied.size >= 2) supplied[1] else 0
+
                 val formatted = resources.getQuantityString(
                     effect.pluralRes,
                     effect.quantity,
-                    *effect.formatArgs.toTypedArray()
+                    first,
+                    second,
+                    third
                 )
                 Snackbar.make(binding.root, formatted, Snackbar.LENGTH_LONG).show()
             }
