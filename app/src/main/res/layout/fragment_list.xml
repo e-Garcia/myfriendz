@@ -42,6 +42,7 @@
             android:layout_height="100dp"
             android:visibility="gone"
             android:src="@drawable/error_icon"
+            android:contentDescription="@string/error_image_description"
             app:layout_constraintBottom_toTopOf="@+id/errorTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

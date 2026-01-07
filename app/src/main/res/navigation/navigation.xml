@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_listFragment_to_addFriendFragment"
             app:destination="@id/addFriendFragment" />
+        <action
+            android:id="@+id/action_listFragment_to_importContactsFragment"
+            app:destination="@id/importContactsFragment" />
     </fragment>
     <fragment
         android:id="@+id/friendDetailsFragment"
@@ -31,6 +34,12 @@
         android:id="@+id/addFriendFragment"
         android:name="com.egarcia.myfriendz.addFriend.view.AddFriendFragment"
         android:label="AddFriendFragment" />
+
+    <fragment
+        android:id="@+id/importContactsFragment"
+        android:name="com.egarcia.myfriendz.importContacts.view.ImportContactsFragment"
+        android:label="ImportContactsFragment"
+        tools:layout="@layout/fragment_import_contacts" />
 
     <fragment
         android:id="@+id/editFriendFragment"
