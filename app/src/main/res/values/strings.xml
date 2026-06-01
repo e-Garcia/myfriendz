@@ -28,6 +28,8 @@
 
     <string name="error_message">Error: %1$s</string>
     <string name="error_fetching_data">Failed to load friends list. Please check your connection.</string>
+    <string name="error_fetching_friend">Failed to load friend details.</string>
+    <string name="error_adding_data">Failed to add friend.</string>
     <string name="error_updating_data">Failed to update friend information.</string>
     <string name="error_deleting_data">Failed to delete friend.</string>
 </resources>
