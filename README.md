@@ -2,13 +2,68 @@
 
 **MyFriendz** is an Android application designed to help you stay connected with your friends by sending timely reminders to reach out. In our fast-paced lives, it's easy to lose touch; MyFriendz ensures that doesn't happen.
 
-## Features
+## Feature Baseline
 
-* 📇 **Contact Management**: Add and manage a list of friends you want to keep in touch with.
-* ⏰ **Custom Reminders**: Set personalized intervals (e.g., weekly, monthly) for each contact.
-* 🔔 **Notifications**: Receive alerts when it's time to reconnect.
-* 📊 **Interaction History**: Log and view past interactions to track your communication.
-* 🎨 **User-Friendly Interface**: Clean and intuitive design for seamless navigation.
+This section separates what is currently implemented from the features that are still missing or incomplete. Use the missing-feature list as the starting point for issue/task breakdown.
+
+### Current Implemented Features
+
+* 📇 **Friend list**: Displays saved friends in a RecyclerView-backed home screen.
+* ➕ **Add friend**: Adds a new friend from the add screen. Current add flow captures the friend's name and initializes `lastContacted` to six months ago by default.
+* 👤 **Friend details**: Opens a detail screen for a selected friend and displays name, last-contacted date, reminder frequency text, phone, email, and comments when present.
+* ✏️ **Edit friend details**: Edits name, email, phone, last-contacted date, and comments from the edit screen.
+* 📅 **Last-contacted tracking**: Stores `lastContacted` dates and formats them as `dd/MM/yyyy`.
+* ✅ **Mark as contacted**: Long-pressing a friend on the list updates `lastContacted` to today and refreshes the list.
+* 🎨 **Contact status colors**: Colors list rows based on how long ago the friend was contacted:
+  * Green: contacted within the last month.
+  * Yellow: older than one month.
+  * Orange: older than three months.
+  * Red: older than six months.
+* ☎️ **Phone action**: Tapping a populated phone value on the detail screen opens the Android dialer with the friend's number.
+* 💾 **Local persistence**: Persists friends locally using Room with fields for name, last-contacted date, frequency, phone, email, and comments.
+* 🧭 **Navigation**: Uses Android Navigation between list, details, add, and edit screens.
+* 🧱 **Architecture**: Uses Clean Architecture-style layers with Fragments/XML/Data Binding, ViewModels, StateFlow/LiveData, Hilt dependency injection, Room, repositories, and a unified `FriendUseCase`.
+* 🧪 **Testing foundation**: Includes unit-test dependencies and ViewModel/domain/repository testing patterns with MockK and coroutine test dispatchers.
+
+### Missing or Incomplete Features to Break Down into Tasks
+
+* ⏰ **Real reminder scheduling**: The app stores reminder-related data, but it does not schedule alarms, WorkManager jobs, or calendar/reminder events.
+* 🔔 **Android notifications**: There is no notification channel, notification permission handling, or notification delivery when a friend is due.
+* 📊 **Interaction history timeline**: The app updates a single `lastContacted` date, but it does not persist a history of each interaction.
+* 📝 **Interaction logging UI**: There is no dedicated flow to record notes, interaction type, or outcome after contacting a friend.
+* ⚙️ **Editable reminder frequency**: The model has a `frequency` field and the detail screen can display it, but the current add/edit forms do not let the user set or update frequency.
+* 🧾 **Complete add-friend form**: The add flow only captures name; it should support phone, email, comments, reminder frequency, and initial last-contacted date.
+* 🗑️ **Delete friend UI**: Repository/use-case/ViewModel delete support exists, but there is no confirmed user-facing delete action wired in the screens.
+* 🔍 **Search, filtering, and sorting**: The friend list does not yet provide search, due/overdue filters, or ordering by urgency/name/last-contacted date.
+* 📇 **Import from device contacts**: No current master-branch flow imports friends from Android Contacts.
+* ✉️ **Email/message actions**: Detail screen displays email, but does not open email, SMS, or messaging intents.
+* 🧪 **Instrumented and end-to-end tests**: Unit-test patterns exist, but user journeys such as add/edit/mark-contacted/delete need UI/instrumented coverage.
+* 🎨 **Compose migration**: Project context says views should use Compose, but current screens are Fragments with XML layouts and Data Binding.
+* ✅ **Input validation**: Add/edit screens need validation for required name, valid email/phone formats, and safe date/frequency values before saving.
+* ♿ **Accessibility and empty states**: Current layouts need a complete pass for content descriptions, empty-list messaging, and touch target/accessibility behavior.
+* 🔄 **Backup/sync support**: Friends are local-only in the current master-branch implementation; there is no cloud sync, export/import, or backup flow.
+
+### Suggested Task Breakdown Order
+
+1. **Requirements cleanup**: Convert each missing feature above into a GitHub issue with acceptance criteria.
+2. **Add/edit form completeness**: Add missing friend fields to the add flow and frequency controls to add/edit.
+3. **Delete friend flow**: Add a confirmed delete action and tests.
+4. **Reminder domain model**: Define reminder frequency semantics and due-date calculation rules.
+5. **Notification infrastructure**: Add notification permission, channel, scheduler, and delivery tests.
+6. **Interaction history**: Add a Room entity and UI for historical contact logs.
+7. **List productivity features**: Add sorting, filtering, and search.
+8. **Contact actions/import**: Add contact import plus email/SMS/dial shortcuts.
+9. **UI modernization**: Decide whether to migrate XML screens to Compose incrementally or keep XML for now.
+10. **E2E coverage**: Add instrumented tests for the core flows after the product behavior is stable.
+
+## Maintenance Status
+
+_Last reviewed by the maintenance scout on 2026-06-01._
+
+* Local verification: `bash ./gradlew testReleaseUnitTest` completed successfully in this checkout.
+* README feature baseline updated on 2026-06-01 after inspecting the current master-branch source.
+* Current UI/source structure uses Android Fragments, XML layouts, Navigation, and Data Binding under `app/src/main/java` and `app/src/main/res`.
+* Reminder scheduling, Android notifications, and persisted interaction-history timeline work are tracked as proposed maintenance tasks until implemented and verified.
 
 ## Getting Started
 
@@ -36,19 +91,25 @@
 
 ## Usage
 
-1. **Add Friends:**
+1. **Add friends:**
 
-    * Tap the "+" button to add a new contact.
-    * Enter the friend's name and select the desired reminder interval.
+    * Tap the "+" button to add a new friend.
+    * Enter the friend's name and save. Additional fields are currently added through the edit flow.
 
-2. **View Reminders:**
+2. **Review friends:**
 
-    * The home screen displays upcoming reminders.
-    * Tap on a contact to view interaction history or edit details.
+    * The home screen displays saved friends and their last-contacted dates.
+    * Row colors indicate how stale the last-contacted date is.
+    * Tap a friend to open details.
 
-3. **Log Interactions:**
+3. **Update contact status:**
 
-    * After connecting with a friend, log the interaction to reset the reminder timer.
+    * Long-press a friend in the list to mark them as contacted today.
+
+4. **Edit details:**
+
+    * From the detail screen, tap edit to update name, email, phone, last-contacted date, and comments.
+    * Tap a populated phone value in the detail screen to open the Android dialer.
 
 ## Project Structure
 
