@@ -58,12 +58,13 @@ This section separates what is currently implemented from the features that are 
 
 ## Maintenance Status
 
-_Last reviewed by the maintenance scout on 2026-06-01._
+_Last reviewed by the maintenance scout on 2026-06-02._
 
-* Local verification: `bash ./gradlew testReleaseUnitTest` completed successfully in this checkout.
+* Local verification: `bash ./gradlew testReleaseUnitTest` completed successfully in this checkout on 2026-06-02.
 * README feature baseline updated on 2026-06-01 after inspecting the current master-branch source.
 * Current UI/source structure uses Android Fragments, XML layouts, Navigation, and Data Binding under `app/src/main/java` and `app/src/main/res`.
 * Reminder scheduling, Android notifications, and persisted interaction-history timeline work are tracked as proposed maintenance tasks until implemented and verified.
+* Current checkout branch during the 2026-06-02 scout was `docs/myfriendz-readme-features`, with open PR #42 for the README feature-baseline documentation.
 
 ## Getting Started
 
