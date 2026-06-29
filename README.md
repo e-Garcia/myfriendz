@@ -2,13 +2,24 @@
 
 **MyFriendz** is an Android application designed to help you stay connected with your friends by sending timely reminders to reach out. In our fast-paced lives, it's easy to lose touch; MyFriendz ensures that doesn't happen.
 
-## Features
+## Current Features
 
-* 📇 **Contact Management**: Add and manage a list of friends you want to keep in touch with.
-* ⏰ **Custom Reminders**: Set personalized intervals (e.g., weekly, monthly) for each contact.
-* 🔔 **Notifications**: Receive alerts when it's time to reconnect.
-* 📊 **Interaction History**: Log and view past interactions to track your communication.
-* 🎨 **User-Friendly Interface**: Clean and intuitive design for seamless navigation.
+* 📇 **Contact Management**: Add, edit, delete, and view friends you want to keep in touch with.
+* 🗓️ **Last Contacted Tracking**: Store when a friend was last contacted and update that date when marking them as contacted.
+* 📱 **Contact Details**: Store phone, email, comments, and a reminder-frequency value for each friend.
+* 🎨 **User-Friendly Interface**: Clean Android UI built with Fragments, Navigation, Data Binding, Room, and Hilt.
+
+## Roadmap
+
+The product roadmap expands MyFriendz from a contact tracker into a relationship reminder app:
+
+* ⏰ **Scheduled Reminders**: Calculate due/upcoming friends from each friend’s contact cadence.
+* 🔔 **Android System Notifications**: Use Android-supported background scheduling and notification channels to remind the user when friends are due for contact.
+* 📊 **Interaction History**: Persist and display a chronological history of contacted events.
+* 💬 **External Communication Actions**: Launch external apps such as Phone, SMS, email, WhatsApp, or another compatible Android app from friend detail/reminder flows.
+* 🚀 **Future In-App Communication**: Leave room for in-app chat/calling once backend, identity, privacy, and media infrastructure are designed.
+
+See [`docs/system-requirements.md`](docs/system-requirements.md) and [`docs/feature-roadmap.md`](docs/feature-roadmap.md) for the detailed requirements and phased delivery plan. Local verification notes live in [`docs/development-notes.md`](docs/development-notes.md).
 
 ## Getting Started
 
@@ -39,16 +50,17 @@
 1. **Add Friends:**
 
     * Tap the "+" button to add a new contact.
-    * Enter the friend's name and select the desired reminder interval.
+    * Enter the friend’s name and contact details.
+    * Set or record the friend’s contact cadence/last-contacted information where supported by the current UI.
 
-2. **View Reminders:**
+2. **Manage Friends:**
 
-    * The home screen displays upcoming reminders.
-    * Tap on a contact to view interaction history or edit details.
+    * Use the home screen to view saved friends.
+    * Tap a friend to view details, edit information, delete the friend, or mark the friend as contacted.
 
-3. **Log Interactions:**
+3. **Planned Reminder Workflow:**
 
-    * After connecting with a friend, log the interaction to reset the reminder timer.
+    * Future versions will show due/upcoming reminders, schedule background reminder checks, send Android system notifications, and record a contacted history timeline.
 
 ## Project Structure
 
