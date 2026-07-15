@@ -19,13 +19,13 @@ import javax.inject.Inject
 sealed class FriendListState {
     object Loading : FriendListState()
     data class Success(val friends: List<Friend>) : FriendListState()
-    data class Error(@StringRes val messageRes: Int) : FriendListState()
+    data class Error(@get:StringRes val messageRes: Int) : FriendListState()
 }
 
 @HiltViewModel
 class FriendsListViewModel @Inject constructor(
     private val friendUseCase: FriendUseCase,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @get:IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _friendsState = MutableStateFlow<FriendListState>(FriendListState.Loading)

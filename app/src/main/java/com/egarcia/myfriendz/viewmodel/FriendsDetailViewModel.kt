@@ -21,13 +21,13 @@ sealed class FriendDetailState {
     object Idle : FriendDetailState()
     object Loading : FriendDetailState()
     data class Success(val friend: Friend) : FriendDetailState()
-    data class Error(@StringRes val messageRes: Int) : FriendDetailState()
+    data class Error(@get:StringRes val messageRes: Int) : FriendDetailState()
 }
 
 @HiltViewModel
 class FriendsDetailViewModel @Inject constructor(
     private val friendUseCase: FriendUseCase,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @get:IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     val friend = MutableLiveData<Friend>()
 
