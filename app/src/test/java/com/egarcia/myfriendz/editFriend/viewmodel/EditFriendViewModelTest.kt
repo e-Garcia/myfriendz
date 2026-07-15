@@ -36,7 +36,7 @@ class EditFriendViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = EditFriendViewModel(friendUseCase)
+        viewModel = EditFriendViewModel(friendUseCase, mainDispatcherRule.dispatcher)
     }
 
     private fun createTestFriend(): Friend {

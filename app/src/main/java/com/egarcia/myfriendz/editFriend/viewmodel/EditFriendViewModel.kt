@@ -28,7 +28,7 @@ sealed class EditFriendState {
 class EditFriendViewModel @Inject constructor(
     private val friendUseCase: FriendUseCase,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
-) {
+) : ViewModel() {
 
     val friend = MutableLiveData<Friend>()
 
@@ -37,19 +37,27 @@ class EditFriendViewModel @Inject constructor(
 
     fun fetch(uuid: Int) {
         viewModelScope.launch {
-            withContext(ioDispatcher) {
-                friend.value = friendUseCase.getFriend(uuid)
+            try {
+                withContext(ioDispatcher) {
+                    friend.value = friendUseCase.getFriend(uuid)
+                }
+                _editFriendState.value = EditFriendState.Success
+            } catch (_: Exception) {
+                _editFriendState.value = EditFriendState.Error(R.string.error_fetching_friend)
             }
-            _editFriendState.value = EditFriendState.Success
         }
     }
 
     fun update(friend: Friend) {
         viewModelScope.launch {
-            withContext(ioDispatcher) {
-                friendUseCase.updateFriendDetails(friend)
+            try {
+                withContext(ioDispatcher) {
+                    friendUseCase.updateFriendDetails(friend)
+                }
+                _editFriendState.value = EditFriendState.Success
+            } catch (_: Exception) {
+                _editFriendState.value = EditFriendState.Error(R.string.error_updating_data)
             }
-            _editFriendState.value = EditFriendState.Success
         }
     }
 }
