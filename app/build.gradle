@@ -1,10 +1,10 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
-    id("androidx.navigation.safeargs.kotlin")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.navigation.safeargs)
 }
 
 android {
@@ -78,4 +78,7 @@ dependencies {
     kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    // libphonenumber for robust phone parsing/normalization
+    implementation(libs.libphonenumber)
 }
