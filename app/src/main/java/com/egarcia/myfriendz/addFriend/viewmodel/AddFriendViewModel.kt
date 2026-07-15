@@ -39,12 +39,16 @@ class AddFriendViewModel @Inject constructor(
 
     fun addFriend() {
         viewModelScope.launch {
-            friend.value?.let {
-                withContext(ioDispatcher) {
-                    friendUseCase.addFriend(it)
+            try {
+                friend.value?.let {
+                    withContext(ioDispatcher) {
+                        friendUseCase.addFriend(it)
+                    }
                 }
+                _addFriendState.value = AddFriendState.Success
+            } catch (_: Exception) {
+                _addFriendState.value = AddFriendState.Error(R.string.error_adding_data)
             }
-            _addFriendState.value = AddFriendState.Success
         }
     }
 }
