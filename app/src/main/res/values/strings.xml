@@ -39,7 +39,7 @@
     <string name="error_importing_contacts">Unable to import contacts at the moment.</string>
     <string name="error_loading_contacts">Failed to load contacts. Please check your app permissions and try again.</string>
     <string name="select_contact_for_import">Select contact %1$s for import</string>
-
+    <string name="no_contacts_imported">No contacts were imported.</string>
 
     <string name="error_message">Error: %1$s</string>
     <string name="error_fetching_data">Failed to load friends list. Please check your connection.</string>

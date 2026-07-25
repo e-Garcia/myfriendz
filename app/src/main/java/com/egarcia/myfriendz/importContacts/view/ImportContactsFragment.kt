@@ -161,21 +161,24 @@ class ImportContactsFragment : Fragment() {
                 Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
             }
             is ImportContactsEffect.ShowPlural -> {
-                // Ensure we supply exactly the arguments expected by the plural resource:
-                // import_contacts_result expects three format args: imported, skipped, failed.
+                // Guard against quantity==0 crash on some OEM ROMs:
+                // getQuantityString with 5 args can throw MissingFormatArgumentException
+                // when quantity=0 (maps to "other" but some OEMs crash on 5-param form).
                 val supplied = effect.formatArgs
-                // Start with quantity as the first arg, then the provided formatArgs. Fill missing with 0.
-                val first: Any = effect.quantity
-                val second: Any = if (supplied.size >= 1) supplied[0] else 0
-                val third: Any = if (supplied.size >= 2) supplied[1] else 0
-
-                val formatted = resources.getQuantityString(
-                    effect.pluralRes,
-                    effect.quantity,
-                    first,
-                    second,
-                    third
-                )
+                val formatted = if (effect.quantity == 0) {
+                    resources.getString(R.string.no_contacts_imported)
+                } else {
+                    val first: Any = effect.quantity
+                    val second: Any = if (supplied.size >= 1) supplied[0] else 0
+                    val third: Any = if (supplied.size >= 2) supplied[1] else 0
+                    resources.getQuantityString(
+                        effect.pluralRes,
+                        effect.quantity,
+                        first,
+                        second,
+                        third
+                    )
+                }
                 Snackbar.make(binding.root, formatted, Snackbar.LENGTH_LONG).show()
             }
             is ImportContactsEffect.ShowText -> {
