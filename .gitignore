@@ -18,3 +18,9 @@
 # JetBrains GitHub Copilot plugin local files
 .idea/copilot*
 .idea/*copilot*.xml
+
+# Hermes coding cron — agent runtime artifacts, not source code
+.hermes-coding-cron/
+
+# User documents directory (Nextcloud mounted, not source code)
+documents/
