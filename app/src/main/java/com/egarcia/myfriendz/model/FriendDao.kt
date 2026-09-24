@@ -33,4 +33,34 @@ interface FriendDao {
     @Query("DELETE FROM friends")
 
     suspend fun deleteAllFriends()
+
+    // ── Preference (profiling) methods ──────────────────────────────────────────
+
+    @Query("SELECT * FROM friend_preferences WHERE friend_id = :friendId")
+    suspend fun getPreferencesByFriend(friendId: Int): List<FriendPreference>
+
+    @Query(
+        """
+        SELECT * FROM friend_preferences 
+        WHERE friend_id = :friendId AND category = :category
+        ORDER BY id DESC LIMIT 1
+        """
+    )
+    suspend fun getLatestPreference(
+        friendId: Int,
+        category: String
+    ): FriendPreference?
+
+    @Query("SELECT COUNT(DISTINCT category) FROM friend_preferences WHERE friend_id = :friendId AND source = 'USER_PROVIDED'")
+    suspend fun getCompletedCategoryCount(friendId: Int): Int
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun addPreference(preference: FriendPreference)
+
+    @Query("DELETE FROM friend_preferences WHERE friend_id = :friendId")
+    suspend fun deletePreferencesForFriend(friendId: Int)
+
+    @Query("SELECT DISTINCT category FROM friend_preferences WHERE friend_id = :friendId")
+    suspend fun getCategoriesForFriend(friendId: Int): List<String>
+
 }
